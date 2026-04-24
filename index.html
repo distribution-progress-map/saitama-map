@@ -349,29 +349,6 @@ function getProgressBar(percent) {
 }
 
 
-// ===== 更新遅延チェック機能ここから =====
-function getUpdateWarning(latestDate) {
-
-  if (!latestDate) return "";
-
-  const last = new Date(latestDate);
-  const today = new Date();
-
-  const diffDays = Math.floor(
-    (today - last) / (1000 * 60 * 60 * 24)
-  );
-
-  if (diffDays >= 7) {
-    return "⚠ 最終更新から7日以上経過";
-  }
-
-  return "";
-
-}
-// ===== 更新遅延チェック機能ここまで =====
-
-
-
 
 document.addEventListener("keydown", function(event) {
   if (event.key === "Enter") {
@@ -501,11 +478,6 @@ document.getElementById("mapTitle").textContent = mapTitle;
         配布合計：${formatNumber(cityData.distributedTotal)}件<br>
         最終実施日：${cityData.latestDate || "未登録"}<br>
 
-
-
-// ===== 更新遅延チェック機能ここから =====
-${getUpdateWarning(cityData.latestDate)}<br>
-// ===== 更新遅延チェック機能ここまで =====
 
 
 
