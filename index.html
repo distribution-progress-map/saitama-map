@@ -177,11 +177,26 @@ html, body {
   }
 
   .leaflet-popup-content {
-    font-size: 10px;
+    font-size: 12px;
     line-height: 1.6;
   }
 }
 /* ===== スマホ表示最適化ここまで ===== */
+
+
+
+
+/* ===== スマホ：ポップアップ中はパネル非表示ここから ===== */
+@media (max-width: 600px) {
+  body.popup-open .panel {
+    display: none;
+  }
+
+  body.popup-open .leaflet-popup {
+    display: block;
+  }
+}
+/* ===== スマホ：ポップアップ中はパネル非表示ここまで ===== */
 
 
 
@@ -502,6 +517,34 @@ ${getUpdateWarning(cityData.latestDate)}<br>
   }).addTo(map);
 
   map.fitBounds(layer.getBounds());
+
+
+  // ===== スマホ：ポップアップ中はパネル非表示ここから =====
+function isSmartPhone() {
+  return window.matchMedia("(max-width: 600px)").matches;
+}
+
+map.on("popupopen", function () {
+  if (isSmartPhone()) {
+    document.body.classList.add("popup-open");
+  }
+});
+
+map.on("popupclose", function () {
+  if (isSmartPhone()) {
+    document.body.classList.remove("popup-open");
+  }
+});
+
+map.on("click", function () {
+  if (isSmartPhone()) {
+    document.body.classList.remove("popup-open");
+  }
+});
+// ===== スマホ：ポップアップ中はパネル非表示ここまで =====
+
+
+
 
   const allCityNames = Object.keys(cityLayers);
 
