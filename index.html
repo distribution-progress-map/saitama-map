@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>埼玉進捗マップ</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: sans-serif;
+}
+
+#map {
+  height: 100%;
+}
+
+.panel {
+  position: absolute;
+  background: white;
+  z-index: 1000;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.25);
+}
+
+.legend {
+  bottom: 20px;
+  right: 20px;
+  line-height: 1.7;
+}
+
+.summary {
+  top: 20px;
+  right: 20px;
+  width: 250px;
+}
+
+.color-box {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  border: 1px solid #333;
+}
+
+.rank-item {
+  margin-top: 6px;
+}
+</style>
+</head>
+
+<body>
+<div id="map"></div>
+
+<div class="panel summary" id="summary">
+  読み込み中...
+</div>
+
+<div class="panel legend">
+  <strong>達成率</strong><br>
+  <span class="color-box" style="background:#f5f5f5"></span>未入力<br>
+  <span class="color-box" style="background:#eeeeee"></span>0〜12%<br>
+  <span class="color-box" style="background:#cce5ff"></span>13〜25%<br>
+  <span class="color-box" style="background:#99ccff"></span>26〜37%<br>
+  <span class="color-box" style="background:#3399ff"></span>38〜50%<br>
+  <span class="color-box" style="background:#66cc66"></span>51〜62%<br>
+  <span class="color-box" style="background:#33aa33"></span>63〜75%<br>
+  <span class="color-box" style="background:#ff9933"></span>76〜87%<br>
+  <span class="color-box" style="background:#ff3333"></span>88〜100%<br>
+</div>
+
+<script>
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbw5Ik32lhEQcAQ4j-FDEcD_xHJwJNPUvsFMqreNTY5uJuyg737OCXv5UwjMu8t22RWxNg/exec";
+
+const map = L.map('map').setView([35.9,139.5],9);
+
+L.tileLayer(
+  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  { attribution:'© OpenStreetMap contributors' }
+).addTo(map);
+
+function getColor(percent, hasData) {
+  if (!hasData) return "#f5f5f5";
+  if (percent <= 12) return "#eeeeee";
+  if (percent <= 25) return "#cce5ff";
+  if (percent <= 37) return "#99ccff";
+  if (percent <= 50) return "#3399ff";
+  if (percent <= 62) return "#66cc66";
+  if (percent <= 75) return "#33aa33";
+  if (percent <= 87) return "#ff9933";
+  return "#ff3333";
+}
+
+function getStatus(percent, hasData) {
+  if (!hasData) return "未入力";
+  if (percent === 0) return "未着手";
+  if (percent >= 100) return "完了";
+  return "進行中";
+}
+
+function getCityName(feature) {
+  return feature.properties.N03_004 || feature.properties.name || feature.properties.NAME || "";
+}
+
+function numberValue(value) {
+  if (value === "" || value === null || value === undefined) return 0;
+  return Number(String(value).replace(/,/g, "")) || 0;
+}
+
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString();
+}
+
+function formatDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (!isNaN(date)) {
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+  }
+  return value;
+}
+
+Promise.all([
+  fetch('saitama.geojson').then(res => res.json()),
+  fetch(SHEET_URL).then(res => res.json())
+])
+.then(([geojson, sheetData]) => {
+  const dataByCity = {};
+
+  sheetData.forEach(row => {
+    const city = row["市町村名"];
+    if (!city) return;
+
+    if (!dataByCity[city]) {
+      dataByCity[city] = {
+        cityName: city,
+        totalHouseholds: 0,
+        distributedTotal: 0,
+        records: [],
+        latestDate: ""
+      };
+    }
+
+    const households = numberValue(row["全戸数"]);
+    const distributed = numberValue(row["配布個数"]);
+
+    if (households > 0) {
+      dataByCity[city].totalHouseholds = households;
+    }
+
+    dataByCity[city].distributedTotal += distributed;
+
+    if (distributed > 0 || row["実施日"] || row["実施者"] || row["備考"]) {
+      dataByCity[city].records.push({
+        date: row["実施日"] || "",
+        person: row["実施者"] || "",
+        count: distributed,
+        note: row["備考"] || ""
+      });
+    }
+  });
+
+  Object.values(dataByCity).forEach(city => {
+    city.percent = city.totalHouseholds > 0
+      ? city.distributedTotal / city.totalHouseholds * 100
+      : 0;
+
+    city.status = getStatus(city.percent, true);
+
+    city.records.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    const dates = city.records
+      .map(r => new Date(r.date))
+      .filter(d => !isNaN(d));
+
+    if (dates.length > 0) {
+      const latest = new Date(Math.max(...dates));
+      city.latestDate = `${latest.getFullYear()}/${latest.getMonth() + 1}/${latest.getDate()}`;
+    }
+  });
+
+  const layer = L.geoJSON(geojson, {
+    style: function(feature) {
+      const cityName = getCityName(feature);
+      const cityData = dataByCity[cityName];
+      const hasData = !!cityData;
+
+      const percent = hasData ? cityData.percent : 0;
+
+      return {
+        color: "black",
+        weight: 1,
+        fillColor: getColor(percent, hasData),
+        fillOpacity: 0.78
+      };
+    },
+
+    onEachFeature: function(feature, layer) {
+      const cityName = getCityName(feature);
+      const cityData = dataByCity[cityName];
+
+      if (!cityData) {
+        layer.bindPopup(`
+          <strong>${cityName}</strong><br><br>
+          ステータス：未入力
+        `);
+        return;
+      }
+
+      let historyHtml = "";
+
+      if (cityData.records.length > 0) {
+        historyHtml = cityData.records.map(record => {
+          const date = formatDate(record.date);
+          const person = record.person || "";
+          const count = record.count ? `${formatNumber(record.count)}件` : "";
+          const note = record.note || "";
+          return `${date}　${person}　${count}　${note}`;
+        }).join("<br>");
+      } else {
+        historyHtml = "履歴なし";
+      }
+
+      layer.bindPopup(`
+        <strong>${cityName}</strong><br><br>
+        ステータス：${cityData.status}<br>
+        達成率：${cityData.percent.toFixed(1)}%<br>
+        全戸数：${formatNumber(cityData.totalHouseholds)}件<br>
+        配布合計：${formatNumber(cityData.distributedTotal)}件<br>
+        最終実施日：${cityData.latestDate || "未登録"}<br><br>
+        <strong>実施履歴：</strong><br>
+        ${historyHtml}
+      `);
+    }
+  }).addTo(map);
+
+  map.fitBounds(layer.getBounds());
+
+  const cityList = Object.values(dataByCity);
+
+  const totalDistributed = cityList.reduce((sum, c) => sum + c.distributedTotal, 0);
+  const totalHouseholds = cityList.reduce((sum, c) => sum + c.totalHouseholds, 0);
+  const overallPercent = totalHouseholds > 0 ? totalDistributed / totalHouseholds * 100 : 0;
+
+  const latestDates = cityList
+    .flatMap(c => c.records.map(r => new Date(r.date)))
+    .filter(d => !isNaN(d));
+
+  let latestText = "未登録";
+  if (latestDates.length > 0) {
+    const latest = new Date(Math.max(...latestDates));
+    latestText = `${latest.getFullYear()}/${latest.getMonth() + 1}/${latest.getDate()}`;
+  }
+
+  const top5 = cityList
+    .filter(c => c.totalHouseholds > 0)
+    .sort((a, b) => b.percent - a.percent)
+    .slice(0, 5);
+
+  document.getElementById("summary").innerHTML = `
+    <strong>埼玉進捗マップ</strong><br><br>
+    全体達成率：${overallPercent.toFixed(1)}%<br>
+    配布合計：${formatNumber(totalDistributed)}件<br>
+    対象戸数：${formatNumber(totalHouseholds)}件<br>
+    最終更新：${latestText}<br><br>
+    <strong>進捗トップ5</strong>
+    ${top5.map((c, i) => `
+      <div class="rank-item">
+        ${i + 1}. ${c.cityName}：${c.percent.toFixed(1)}%
+      </div>
+    `).join("")}
+  `;
+})
+.catch(error => {
+  console.error(error);
+  alert("データの読み込みに失敗しました。Apps ScriptのURLやファイル名を確認してください。");
+});
+</script>
+
+</body>
+</html>
