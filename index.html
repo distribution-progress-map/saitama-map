@@ -2,12 +2,34 @@
 <html>
 <head>
 <meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@900&display=swap" rel="stylesheet">
 <title>埼玉進捗マップ</title>
 
 <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <style>
+
+.title-panel {
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(22px, 4vw, 48px);
+  font-weight: 900;
+  text-align: center;
+  max-width: 90%;
+
+  font-family: "Zen Kaku Gothic New", sans-serif;
+
+  letter-spacing: 0.08em;
+
+  background: rgba(255,255,255,0.92);
+  padding: 8px 18px;
+  border-radius: 10px;
+
+  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+}
+
 html, body {
   margin: 0;
   height: 100%;
@@ -72,6 +94,10 @@ html, body {
 <body>
 <div id="map"></div>
 
+<div class="panel title-panel" id="mapTitle">
+  読み込み中...
+</div>
+
 <div class="panel search-panel">
   <strong>市町村検索</strong><br><br>
   <input id="searchInput" type="text" placeholder="例：川越市">
@@ -83,16 +109,11 @@ html, body {
 </div>
 
 <div class="panel legend">
-  <strong>達成率</strong><br>
-  <span class="color-box" style="background:#f5f5f5"></span>未入力<br>
-  <span class="color-box" style="background:#eeeeee"></span>0〜12%<br>
-  <span class="color-box" style="background:#cce5ff"></span>13〜25%<br>
-  <span class="color-box" style="background:#99ccff"></span>26〜37%<br>
-  <span class="color-box" style="background:#3399ff"></span>38〜50%<br>
-  <span class="color-box" style="background:#66cc66"></span>51〜62%<br>
-  <span class="color-box" style="background:#33aa33"></span>63〜75%<br>
-  <span class="color-box" style="background:#ff9933"></span>76〜87%<br>
-  <span class="color-box" style="background:#ff3333"></span>88〜100%<br>
+  <strong>進捗状態</strong><br>
+  <span class="color-box" style="background:#d9d9d9"></span>未着手（0%）<br>
+  <span class="color-box" style="background:#ffd600"></span>0–50%<br>
+  <span class="color-box" style="background:#0070ff"></span>51–80%<br>
+  <span class="color-box" style="background:#00b050"></span>81–100%<br>
 </div>
 
 <script>
@@ -107,16 +128,16 @@ L.tileLayer(
 
 let cityLayers = {};
 
-function getColor(percent, hasData) {
-  if (!hasData) return "#f5f5f5";
-  if (percent <= 12) return "#eeeeee";
-  if (percent <= 25) return "#cce5ff";
-  if (percent <= 37) return "#99ccff";
-  if (percent <= 50) return "#3399ff";
-  if (percent <= 62) return "#66cc66";
-  if (percent <= 75) return "#33aa33";
-  if (percent <= 87) return "#ff9933";
-  return "#ff3333";
+function getColor(percent) {
+
+  if (percent === 0) return "#d9d9d9"; // 未着手（薄グレー）
+
+  if (percent <= 50) return "#ffd600"; // 0-50%（濃い黄色）
+
+  if (percent <= 80) return "#0070ff"; // 51-80%（濃い青）
+
+  return "#00b050"; // 81-100%（濃い緑）
+
 }
 
 function getStatus(percent, hasData) {
@@ -174,6 +195,72 @@ function searchCity() {
   layer.openPopup();
 }
 
+function jumpToCity(cityName) {
+  const layer = cityLayers[cityName];
+
+  if (!layer) {
+    alert("市町村データが見つかりません");
+    return;
+  }
+
+  map.fitBounds(layer.getBounds(), {
+    padding: [40, 40]
+  });
+
+  layer.openPopup();
+}
+
+function getProgressBar(percent) {
+
+  const color = getColor(percent);
+
+  return `
+    <div style="
+      width: 160px;
+      height: 12px;
+      background: #eeeeee;
+      border: 1px solid #999;
+      border-radius: 8px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+    ">
+      <div style="
+        width: ${Math.min(percent, 100)}%;
+        height: 100%;
+        background: ${color};
+      "></div>
+    </div>
+    ${percent.toFixed(1)}%
+  `;
+}
+
+
+// ===== 更新遅延チェック機能ここから =====
+function getUpdateWarning(latestDate) {
+
+  if (!latestDate) return "";
+
+  const last = new Date(latestDate);
+  const today = new Date();
+
+  const diffDays = Math.floor(
+    (today - last) / (1000 * 60 * 60 * 24)
+  );
+
+  if (diffDays >= 7) {
+    return "⚠ 最終更新から7日以上経過";
+  }
+
+  return "";
+
+}
+// ===== 更新遅延チェック機能ここまで =====
+
+
+
+
 document.addEventListener("keydown", function(event) {
   if (event.key === "Enter") {
     const active = document.activeElement;
@@ -187,7 +274,14 @@ Promise.all([
   fetch('saitama.geojson').then(res => res.json()),
   fetch(SHEET_URL).then(res => res.json())
 ])
-.then(([geojson, sheetData]) => {
+.then(([geojson, sheetResponse]) => {
+
+    const mapTitle = sheetResponse.title || "埼玉進捗マップ";
+    const sheetData = sheetResponse.data || [];
+
+document.getElementById("mapTitle").textContent = mapTitle;
+
+
   const dataByCity = {};
 
   sheetData.forEach(row => {
@@ -252,7 +346,7 @@ Promise.all([
       return {
         color: "black",
         weight: 1,
-        fillColor: getColor(percent, hasData),
+        fillColor: getColor(percent),
         fillOpacity: 0.78
       };
     },
@@ -289,9 +383,21 @@ Promise.all([
         <strong>${cityName}</strong><br><br>
         ステータス：${cityData.status}<br>
         達成率：${cityData.percent.toFixed(1)}%<br>
+        <br>
+        進捗：${getProgressBar(cityData.percent)}<br>
         全戸数：${formatNumber(cityData.totalHouseholds)}件<br>
         配布合計：${formatNumber(cityData.distributedTotal)}件<br>
-        最終実施日：${cityData.latestDate || "未登録"}<br><br>
+        最終実施日：${cityData.latestDate || "未登録"}<br>
+
+
+
+// ===== 更新遅延チェック機能ここから =====
+${getUpdateWarning(cityData.latestDate)}<br>
+// ===== 更新遅延チェック機能ここまで =====
+
+
+
+<br>
         <strong>実施履歴：</strong><br>
         ${historyHtml}
       `);
@@ -300,7 +406,18 @@ Promise.all([
 
   map.fitBounds(layer.getBounds());
 
+  const allCityNames = Object.keys(cityLayers);
+
+const missingCities = allCityNames.filter(name => {
+  const cityData = dataByCity[name];
+  return !cityData || cityData.distributedTotal === 0;
+});
+
   const cityList = Object.values(dataByCity);
+
+  const notStartedCount = cityList.filter(c => c.percent === 0).length;
+const inProgressCount = cityList.filter(c => c.percent > 0 && c.percent < 100).length;
+const completedCount = cityList.filter(c => c.percent >= 100).length;
 
   const totalDistributed = cityList.reduce((sum, c) => sum + c.distributedTotal, 0);
   const totalHouseholds = cityList.reduce((sum, c) => sum + c.totalHouseholds, 0);
@@ -324,9 +441,29 @@ Promise.all([
   document.getElementById("summary").innerHTML = `
     <strong>埼玉進捗マップ</strong><br><br>
     全体達成率：${overallPercent.toFixed(1)}%<br>
-    配布合計：${formatNumber(totalDistributed)}件<br>
-    対象戸数：${formatNumber(totalHouseholds)}件<br>
+    配布合計：${formatNumber(totalDistributed)}戸<br>
+    対象戸数：${formatNumber(totalHouseholds)}戸<br>
     最終更新：${latestText}<br><br>
+
+<strong>進捗状況</strong><br>
+未着手：${notStartedCount}<br>
+進行中：${inProgressCount}<br>
+完了：${completedCount}<br><br>
+
+    <br>
+<strong>未着手市町村</strong><br>
+${missingCities.length}件<br>
+${missingCities.slice(0, 10).map(name => `
+  <span
+    style="cursor:pointer;color:#0070ff;text-decoration:underline"
+    onclick="jumpToCity('${name}')"
+  >
+    ${name}
+  </span>
+`).join("、")}
+${missingCities.length > 10 ? " ほか" : ""}
+<br><br>
+
     <strong>進捗トップ5</strong>
     ${top5.map((c, i) => `
       <div class="rank-item">
