@@ -28,16 +28,31 @@ html, body {
   box-shadow: 0 0 8px rgba(0,0,0,0.25);
 }
 
-.legend {
-  bottom: 20px;
-  right: 20px;
-  line-height: 1.7;
+.search-panel {
+  top: 20px;
+  left: 20px;
+  width: 260px;
+}
+
+.search-panel input {
+  width: 170px;
+  padding: 6px;
+}
+
+.search-panel button {
+  padding: 6px 10px;
 }
 
 .summary {
   top: 20px;
   right: 20px;
   width: 250px;
+}
+
+.legend {
+  bottom: 20px;
+  right: 20px;
+  line-height: 1.7;
 }
 
 .color-box {
@@ -56,6 +71,12 @@ html, body {
 
 <body>
 <div id="map"></div>
+
+<div class="panel search-panel">
+  <strong>市町村検索</strong><br><br>
+  <input id="searchInput" type="text" placeholder="例：川越市">
+  <button onclick="searchCity()">検索</button>
+</div>
 
 <div class="panel summary" id="summary">
   読み込み中...
@@ -83,6 +104,8 @@ L.tileLayer(
   'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
   { attribution:'© OpenStreetMap contributors' }
 ).addTo(map);
+
+let cityLayers = {};
 
 function getColor(percent, hasData) {
   if (!hasData) return "#f5f5f5";
@@ -124,6 +147,41 @@ function formatDate(value) {
   }
   return value;
 }
+
+function searchCity() {
+  const keyword = document.getElementById("searchInput").value.trim();
+
+  if (!keyword) {
+    alert("市町村名を入力してください");
+    return;
+  }
+
+  const matchedName = Object.keys(cityLayers).find(name =>
+    name.includes(keyword)
+  );
+
+  if (!matchedName) {
+    alert("該当する市町村が見つかりませんでした");
+    return;
+  }
+
+  const layer = cityLayers[matchedName];
+
+  map.fitBounds(layer.getBounds(), {
+    padding: [40, 40]
+  });
+
+  layer.openPopup();
+}
+
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    const active = document.activeElement;
+    if (active && active.id === "searchInput") {
+      searchCity();
+    }
+  }
+});
 
 Promise.all([
   fetch('saitama.geojson').then(res => res.json()),
@@ -189,7 +247,6 @@ Promise.all([
       const cityName = getCityName(feature);
       const cityData = dataByCity[cityName];
       const hasData = !!cityData;
-
       const percent = hasData ? cityData.percent : 0;
 
       return {
@@ -203,6 +260,8 @@ Promise.all([
     onEachFeature: function(feature, layer) {
       const cityName = getCityName(feature);
       const cityData = dataByCity[cityName];
+
+      cityLayers[cityName] = layer;
 
       if (!cityData) {
         layer.bindPopup(`
