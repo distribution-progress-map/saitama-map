@@ -120,6 +120,45 @@ html, body {
 .rank-item {
   margin-top: 6px;
 }
+
+
+/* ===== スマホ表示：右上パネルを小さくする ===== */
+@media (max-width: 600px) {
+  #summary {
+    top: 95px;
+    right: 10px;
+    left: auto;
+    width: 42%;
+    max-height: 48vh;
+    overflow-y: auto;
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .search-panel {
+    width: 72%;
+    font-size: 16px;
+  }
+
+  .search-panel input {
+    width: 55%;
+    font-size: 16px;
+  }
+
+  .legend {
+    right: 10px;
+    bottom: 35px;
+    font-size: 13px;
+  }
+
+  .leaflet-popup-content {
+    font-size: 17px;
+    line-height: 1.6;
+  }
+}
+
+
+
 </style>
 </head>
 
