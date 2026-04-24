@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>川越市 町丁目マップ</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+html, body {
+  margin: 0;
+  height: 100%;
+  font-family: sans-serif;
+}
+
+#map {
+  height: 100%;
+}
+
+.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+  background: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(0,0,0,0.25);
+}
+</style>
+</head>
+
+<body>
+
+<div class="back-button" onclick="goBack()">
+← 埼玉マップへ戻る
+</div>
+
+<div id="map"></div>
+
+<script>
+function goBack() {
+  window.location.href = "index.html";
+}
+
+const map = L.map('map').setView([35.925, 139.485], 12);
+
+L.tileLayer(
+  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  { attribution:'© OpenStreetMap contributors' }
+).addTo(map);
+
+fetch("kawagoe.geojson")
+.then(res => res.json())
+.then(data => {
+
+  const layer = L.geoJSON(data, {
+    style: {
+      color: "black",
+      weight: 1,
+      fillColor: "#eeeeee",
+      fillOpacity: 0.7
+    },
+
+    onEachFeature: function(feature, layer) {
+      const name =
+        feature.properties.S_NAME ||
+        feature.properties.MOJI ||
+        feature.properties.name ||
+        feature.properties.N03_004 ||
+        "町丁目";
+
+      layer.bindPopup(`
+        <strong>${name}</strong>
+      `);
+    }
+  }).addTo(map);
+
+  map.fitBounds(layer.getBounds());
+})
+.catch(error => {
+  console.error(error);
+  alert("kawagoe.geojson の読み込みに失敗しました。ファイル名や形式を確認してください。");
+});
+</script>
+
+</body>
+</html>
