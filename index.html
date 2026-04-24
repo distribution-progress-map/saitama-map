@@ -3,415 +3,580 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@900&display=swap" rel="stylesheet">
-
 <title>埼玉進捗マップ</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <style>
-
 html, body {
-margin:0;
-height:100%;
-font-family:sans-serif;
+  margin: 0;
+  height: 100%;
+  font-family: sans-serif;
 }
 
-#map{
-height:100%;
+#map {
+  height: 100%;
 }
 
-.panel{
-position:absolute;
-background:white;
-z-index:1000;
-padding:12px;
-border-radius:8px;
-font-size:14px;
-box-shadow:0 0 8px rgba(0,0,0,0.25);
+.panel {
+  position: absolute;
+  background: white;
+  z-index: 1000;
+  padding: 12px;
+  border-radius: 8px;
+  font-size: 14px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.25);
 }
 
-.title-panel{
-top:26px;
-left:50%;
-transform:translateX(-50%);
-font-size:clamp(12px,2vw,24px);
-font-weight:900;
-text-align:center;
-max-width:90%;
-font-family:"Zen Kaku Gothic New",sans-serif;
-letter-spacing:0.08em;
-background:rgba(255,255,255,0.92);
-padding:8px 18px;
-border-radius:10px;
-box-shadow:0 3px 8px rgba(0,0,0,0.18);
+.title-panel {
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(12px, 2vw, 24px);
+  font-weight: 900;
+  text-align: center;
+  max-width: 90%;
+  font-family: "Zen Kaku Gothic New", sans-serif;
+  letter-spacing: 0.08em;
+  background: rgba(255,255,255,0.92);
+  padding: 8px 18px;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
 }
 
-.search-panel{
-top:20px;
-left:20px;
-width:260px;
+.search-panel {
+  top: 20px;
+  left: 20px;
+  width: 260px;
 }
 
-.summary{
-top:20px;
-right:20px;
-width:250px;
+.search-panel input {
+  width: 170px;
+  padding: 6px;
 }
 
-.legend{
-bottom:20px;
-right:20px;
-line-height:1.7;
+.search-panel button {
+  padding: 6px 10px;
 }
 
-.color-box{
-display:inline-block;
-width:14px;
-height:14px;
-margin-right:6px;
-border:1px solid #333;
+.summary {
+  top: 20px;
+  right: 20px;
+  width: 250px;
 }
 
-.rank-item{
-margin-top:6px;
+.legend {
+  bottom: 20px;
+  right: 20px;
+  line-height: 1.7;
 }
 
-
-/* ===== スマホ表示最適化 ===== */
-
-@media(max-width:600px){
-
-.title-panel{
-top:12px;
-font-size:clamp(14px,3vw,18px);
-max-width:86%;
+.color-box {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 6px;
+  border: 1px solid #333;
 }
 
-.search-panel{
-top:85px;
-left:10px;
-width:42%;
-font-size:12px;
-padding:8px;
+.rank-item {
+  margin-top: 6px;
 }
 
-.search-panel input{
-width:100%;
-margin-bottom:6px;
-}
+/* ===== スマホ表示最適化ここから ===== */
+@media (max-width: 600px) {
 
-.search-panel button{
-width:100%;
-}
+  .title-panel {
+    top: 12px;
+    z-index: 1200;
+    font-size: clamp(14px, 3vw, 18px);
+    padding: 8px 14px;
+    max-width: 86%;
+  }
 
-#summary{
-top:85px;
-right:10px;
-width:42%;
-max-height:26vh;
-overflow-y:auto;
-font-size:12px;
-padding:8px;
-position:absolute;
-}
+  .search-panel {
+    top: 85px;
+    left: 10px;
+    width: 42%;
+    font-size: 12px;
+    padding: 8px;
+  }
 
-#summary::after{
-content:"▼ 下にスクロール";
-position:sticky;
-bottom:0;
-display:block;
-background:linear-gradient(to top,white 70%,rgba(255,255,255,0));
-padding-top:18px;
-text-align:center;
-font-size:11px;
-color:#555;
-}
+  .search-panel input {
+    width: 100%;
+    box-sizing: border-box;
+    font-size: 12px;
+    padding: 5px;
+    margin-bottom: 6px;
+  }
 
-.legend{
-right:10px;
-bottom:38px;
-font-size:12px;
-padding:8px;
-}
+  .search-panel button {
+    width: 100%;
+    font-size: 12px;
+    padding: 5px;
+  }
 
-.color-box{
-width:11px;
-height:11px;
-}
+  #summary {
+    top: 85px;
+    right: 10px;
+    width: 42%;
+    max-height: 26vh;
+    overflow-y: auto;
+    font-size: 12px;
+    line-height: 1.45;
+    padding: 8px;
+    position: absolute;
+  }
 
-.leaflet-popup-content{
-font-size:14px;
-}
+  #summary::after {
+    content: "▼ 下にスクロール";
+    position: sticky;
+    bottom: 0;
+    display: block;
+    background: linear-gradient(to top, white 70%, rgba(255,255,255,0));
+    padding-top: 18px;
+    padding-bottom: 2px;
+    text-align: center;
+    font-size: 11px;
+    color: #555;
+  }
 
-body.popup-open .panel{
-display:none;
-}
+  .legend {
+    right: 10px;
+    bottom: 38px;
+    font-size: 12px;
+    padding: 8px;
+    line-height: 1.45;
+  }
 
-body.popup-open .leaflet-popup{
-display:block;
-}
+  .color-box {
+    width: 11px;
+    height: 11px;
+  }
 
-}
+  .leaflet-popup-content {
+    font-size: 14px;
+    line-height: 1.6;
+  }
 
+  body.popup-open .panel {
+    display: none;
+  }
+
+  body.popup-open .leaflet-popup {
+    display: block;
+  }
+}
+/* ===== スマホ表示最適化ここまで ===== */
 </style>
+
 </head>
 
 <body>
-
 <div id="map"></div>
 
 <div class="panel title-panel" id="mapTitle">
-読み込み中...
+  読み込み中...
 </div>
 
 <div class="panel search-panel">
-
-<strong>市町村検索</strong><br><br>
-
-<input id="searchInput"
-type="text"
-placeholder="例：川越市">
-
-<button onclick="searchCity()">検索</button>
-
+  <strong>市町村検索</strong><br><br>
+  <input id="searchInput" type="text" placeholder="例：川越市">
+  <button onclick="searchCity()">検索</button>
 </div>
-
 
 <div class="panel summary" id="summary">
-読み込み中...
+  読み込み中...
 </div>
-
 
 <div class="panel legend">
-
-<strong>進捗状態</strong><br>
-
-<span class="color-box"
-style="background:#d9d9d9"></span>
-未着手（0%）<br>
-
-<span class="color-box"
-style="background:#ff3333"></span>
-0–50%<br>
-
-<span class="color-box"
-style="background:#ffd600"></span>
-51–80%<br>
-
-<span class="color-box"
-style="background:#0070ff"></span>
-81–100%<br>
-
+  <strong>進捗状態</strong><br>
+  <span class="color-box" style="background:#d9d9d9"></span>未着手（0%）<br>
+  <span class="color-box" style="background:#ff3333"></span>0–50%<br>
+  <span class="color-box" style="background:#ffd600"></span>51–80%<br>
+  <span class="color-box" style="background:#0070ff"></span>81–100%<br>
 </div>
 
-
 <script>
+const SHEET_URL = "https://script.google.com/macros/s/AKfycbw5Ik32lhEQcAQ4j-FDEcD_xHJwJNPUvsFMqreNTY5uJuyg737OCXv5UwjMu8t22RWxNg/exec";
 
-const SHEET_URL=
-"https://script.google.com/macros/s/AKfycbw5Ik32lhEQcAQ4j-FDEcD_xHJwJNPUvsFMqreNTY5uJuyg737OCXv5UwjMu8t22RWxNg/exec";
-
-
-const map=
-L.map("map")
-.setView([35.9,139.5],9);
-
+const map = L.map('map').setView([35.9,139.5],9);
 
 L.tileLayer(
-"https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-{attribution:"© OpenStreetMap contributors"}
+  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+  { attribution:'© OpenStreetMap contributors' }
 ).addTo(map);
 
+let cityLayers = {};
 
-let cityLayers={};
+function getColor(percent) {
 
+  if (percent === 0) return "#d9d9d9"; // 未着手（薄めのグレー）
 
-function getColor(percent){
+  if (percent <= 50) return "#ff3333"; // 0-50%（赤）
 
-if(percent===0)return"#d9d9d9";
+  if (percent <= 80) return "#ffd600"; // 51-80%（黄色）
 
-if(percent<=50)return"#ff3333";
-
-if(percent<=80)return"#ffd600";
-
-return"#0070ff";
+  return "#0070ff"; // 81-100%（青）
 
 }
 
+function getStatus(percent, hasData) {
+  if (!hasData) return "未入力";
+  if (percent === 0) return "未着手";
+  if (percent >= 100) return "完了";
+  return "進行中";
+}
 
-function getCityName(feature){
+function getCityName(feature) {
+  return feature.properties.N03_004 || feature.properties.name || feature.properties.NAME || "";
+}
 
-return feature.properties.N03_004
-||feature.properties.name
-||feature.properties.NAME
-||"";
+function numberValue(value) {
+  if (value === "" || value === null || value === undefined) return 0;
+  return Number(String(value).replace(/,/g, "")) || 0;
+}
 
+function formatNumber(value) {
+  return Number(value || 0).toLocaleString();
+}
+
+function formatDate(value) {
+  if (!value) return "";
+  const date = new Date(value);
+  if (!isNaN(date)) {
+    return `${date.getMonth() + 1}/${date.getDate()}`;
+  }
+  return value;
+}
+
+function searchCity() {
+  const keyword = document.getElementById("searchInput").value.trim();
+
+  if (!keyword) {
+    alert("市町村名を入力してください");
+    return;
+  }
+
+  const matchedName = Object.keys(cityLayers).find(name =>
+    name.includes(keyword)
+  );
+
+  if (!matchedName) {
+    alert("該当する市町村が見つかりませんでした");
+    return;
+  }
+
+  const layer = cityLayers[matchedName];
+
+  map.fitBounds(layer.getBounds(), {
+    padding: [40, 40]
+  });
+
+  layer.openPopup();
+}
+
+function jumpToCity(cityName) {
+  const layer = cityLayers[cityName];
+
+  if (!layer) {
+    alert("市町村データが見つかりません");
+    return;
+  }
+
+  map.fitBounds(layer.getBounds(), {
+    padding: [40, 40]
+  });
+
+  layer.openPopup();
+}
+
+function getProgressBar(percent) {
+
+  const color = getColor(percent);
+
+  return `
+    <div style="
+      width: 160px;
+      height: 12px;
+      background: #eeeeee;
+      border: 1px solid #999;
+      border-radius: 8px;
+      overflow: hidden;
+      display: inline-block;
+      vertical-align: middle;
+      margin-right: 6px;
+    ">
+      <div style="
+        width: ${Math.min(percent, 100)}%;
+        height: 100%;
+        background: ${color};
+      "></div>
+    </div>
+    ${percent.toFixed(1)}%
+  `;
 }
 
 
-function searchCity(){
 
-const keyword=
-document.getElementById("searchInput")
-.value.trim();
-
-if(!keyword){
-
-alert("市町村名を入力してください");
-return;
-
-}
-
-const matchedName=
-Object.keys(cityLayers)
-.find(name=>name.includes(keyword));
-
-if(!matchedName){
-
-alert("該当する市町村が見つかりませんでした");
-return;
-
-}
-
-const layer=
-cityLayers[matchedName];
-
-map.fitBounds(layer.getBounds());
-
-layer.openPopup();
-
-}
-
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Enter") {
+    const active = document.activeElement;
+    if (active && active.id === "searchInput") {
+      searchCity();
+    }
+  }
+});
 
 Promise.all([
-
-fetch("saitama.geojson")
-.then(res=>res.json()),
-
-fetch(SHEET_URL)
-.then(res=>res.json())
-
+  fetch('saitama.geojson').then(res => res.json()),
+  fetch(SHEET_URL).then(res => res.json())
 ])
+.then(([geojson, sheetResponse]) => {
 
-.then(([geojson,sheetResponse])=>{
+    const mapTitle = sheetResponse.title || "埼玉進捗マップ";
+    const sheetData = sheetResponse.data || [];
 
-
-document.getElementById("mapTitle")
-.textContent=
-sheetResponse.title||"埼玉進捗マップ";
-
-
-const sheetData=
-sheetResponse.data||[];
+document.getElementById("mapTitle").textContent = mapTitle;
 
 
-const dataByCity={};
+  const dataByCity = {};
+
+  sheetData.forEach(row => {
+    const city = row["市町村名"];
+    if (!city) return;
+
+    if (!dataByCity[city]) {
+      dataByCity[city] = {
+        cityName: city,
+        totalHouseholds: 0,
+        distributedTotal: 0,
+        records: [],
+        latestDate: ""
+      };
+    }
+
+    const households = numberValue(row["全戸数"]);
+    const distributed = numberValue(row["配布個数"]);
+
+    if (households > 0) {
+      dataByCity[city].totalHouseholds = households;
+    }
+
+    dataByCity[city].distributedTotal += distributed;
+
+    if (distributed > 0 || row["実施日"] || row["実施者"] || row["備考"]) {
+      dataByCity[city].records.push({
+        date: row["実施日"] || "",
+        person: row["実施者"] || "",
+        count: distributed,
+        note: row["備考"] || ""
+      });
+    }
+  });
+
+  Object.values(dataByCity).forEach(city => {
+    city.percent = city.totalHouseholds > 0
+      ? city.distributedTotal / city.totalHouseholds * 100
+      : 0;
+
+    city.status = getStatus(city.percent, true);
+
+    city.records.sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    const dates = city.records
+      .map(r => new Date(r.date))
+      .filter(d => !isNaN(d));
+
+    if (dates.length > 0) {
+      const latest = new Date(Math.max(...dates));
+      city.latestDate = `${latest.getFullYear()}/${latest.getMonth() + 1}/${latest.getDate()}`;
+    }
+  });
+
+  const layer = L.geoJSON(geojson, {
+    style: function(feature) {
+      const cityName = getCityName(feature);
+      const cityData = dataByCity[cityName];
+      const hasData = !!cityData;
+      const percent = hasData ? cityData.percent : 0;
+
+      return {
+        color: "black",
+        weight: 1,
+        fillColor: getColor(percent),
+        fillOpacity: 0.78
+      };
+    },
+
+    onEachFeature: function(feature, layer) {
+      const cityName = getCityName(feature);
+      const cityData = dataByCity[cityName];
+
+      cityLayers[cityName] = layer;
 
 
-sheetData.forEach(row=>{
 
-const city=row["市町村名"];
+      
+      // ===== 市クリックで詳細ページへ移動ここから =====
+layer.on("dblclick", function () {
 
-if(!city)return;
+  const cityFileMap = {
+    "川越市": "kawagoe.html",
+    "熊谷市": "kumagaya.html",
+    "所沢市": "tokorozawa.html"
+  };
 
-if(!dataByCity[city]){
+  const targetPage = cityFileMap[cityName];
 
-dataByCity[city]={
-
-totalHouseholds:0,
-distributedTotal:0
-
-};
-
-}
-
-dataByCity[city].totalHouseholds=
-Number(row["全戸数"]||0);
-
-dataByCity[city].distributedTotal+=
-Number(row["配布個数"]||0);
+  if (targetPage) {
+    window.location.href = targetPage;
+  }
 
 });
+// ===== 市クリックで詳細ページへ移動ここまで =====
 
 
-const layer=
-
-L.geoJSON(geojson,{
-
-style:function(feature){
-
-const name=
-getCityName(feature);
-
-const data=
-dataByCity[name];
-
-const percent=
-data?
-data.distributedTotal/
-data.totalHouseholds*100
-:0;
-
-return{
-
-color:"black",
-weight:1,
-fillColor:getColor(percent),
-fillOpacity:0.78
-
-};
-
-},
 
 
-onEachFeature:function(feature,layer){
+      if (!cityData) {
+        layer.bindPopup(`
+          <strong>${cityName}</strong><br><br>
+          ステータス：未入力
+        `);
+        return;
+      }
 
-const cityName=
-getCityName(feature);
+      let historyHtml = "";
 
-cityLayers[cityName]=layer;
+      if (cityData.records.length > 0) {
+        historyHtml = cityData.records.map(record => {
+          const date = formatDate(record.date);
+          const person = record.person || "";
+          const count = record.count ? `${formatNumber(record.count)}件` : "";
+          const note = record.note || "";
+          return `${date}　${person}　${count}　${note}`;
+        }).join("<br>");
+      } else {
+        historyHtml = "履歴なし";
+      }
+
+      layer.bindPopup(`
+        <strong>${cityName}</strong><br><br>
+        ステータス：${cityData.status}<br>
+        達成率：${cityData.percent.toFixed(1)}%<br>
+        <br>
+        進捗：${getProgressBar(cityData.percent)}<br>
+        全戸数：${formatNumber(cityData.totalHouseholds)}件<br>
+        配布合計：${formatNumber(cityData.distributedTotal)}件<br>
+        最終実施日：${cityData.latestDate || "未登録"}<br>
 
 
-/* ===== 市クリックで町丁目ページへ遷移 ===== */
 
-layer.on("dblclick",function(){
 
-const cityFileMap={
+<br>
+        <strong>実施履歴：</strong><br>
+        ${historyHtml}
+      `);
+    }
+  }).addTo(map);
 
-"川越市":"kawagoe.html"
+  map.fitBounds(layer.getBounds());
 
-};
 
-if(cityFileMap[cityName]){
-
-window.location.href=
-cityFileMap[cityName];
-
+  // ===== スマホ：ポップアップ中はパネル非表示ここから =====
+function isSmartPhone() {
+  return window.matchMedia("(max-width: 600px)").matches;
 }
 
+map.on("popupopen", function () {
+  if (isSmartPhone()) {
+    document.body.classList.add("popup-open");
+  }
 });
 
-/* ===== 遷移ここまで ===== */
+map.on("popupclose", function () {
+  if (isSmartPhone()) {
+    document.body.classList.remove("popup-open");
+  }
+});
+
+map.on("click", function () {
+  if (isSmartPhone()) {
+    document.body.classList.remove("popup-open");
+  }
+});
+// ===== スマホ：ポップアップ中はパネル非表示ここまで =====
 
 
-layer.bindPopup(cityName);
 
-}
 
+  const allCityNames = Object.keys(cityLayers);
+
+const missingCities = allCityNames.filter(name => {
+  const cityData = dataByCity[name];
+  return !cityData || cityData.distributedTotal === 0;
+});
+
+  const cityList = Object.values(dataByCity);
+
+  const notStartedCount = cityList.filter(c => c.percent === 0).length;
+const inProgressCount = cityList.filter(c => c.percent > 0 && c.percent < 100).length;
+const completedCount = cityList.filter(c => c.percent >= 100).length;
+
+  const totalDistributed = cityList.reduce((sum, c) => sum + c.distributedTotal, 0);
+  const totalHouseholds = cityList.reduce((sum, c) => sum + c.totalHouseholds, 0);
+  const overallPercent = totalHouseholds > 0 ? totalDistributed / totalHouseholds * 100 : 0;
+
+  const latestDates = cityList
+    .flatMap(c => c.records.map(r => new Date(r.date)))
+    .filter(d => !isNaN(d));
+
+  let latestText = "未登録";
+  if (latestDates.length > 0) {
+    const latest = new Date(Math.max(...latestDates));
+    latestText = `${latest.getFullYear()}/${latest.getMonth() + 1}/${latest.getDate()}`;
+  }
+
+  const top5 = cityList
+    .filter(c => c.totalHouseholds > 0)
+    .sort((a, b) => b.percent - a.percent)
+    .slice(0, 5);
+
+  document.getElementById("summary").innerHTML = `
+    <strong>埼玉進捗マップ</strong><br><br>
+    全体達成率：${overallPercent.toFixed(1)}%<br>
+    配布合計：${formatNumber(totalDistributed)}戸<br>
+    対象戸数：${formatNumber(totalHouseholds)}戸<br>
+    最終更新：${latestText}<br><br>
+
+<strong>進捗状況</strong><br>
+未着手：${notStartedCount}<br>
+進行中：${inProgressCount}<br>
+完了：${completedCount}<br><br>
+
+    <br>
+<strong>未着手市町村</strong><br>
+${missingCities.length}件<br>
+${missingCities.slice(0, 15).map(name => `
+  <span
+    style="cursor:pointer;color:#0070ff;text-decoration:underline"
+    onclick="jumpToCity('${name}')"
+  >
+    ${name}
+  </span>
+`).join("、")}
+${missingCities.length > 10 ? " ほか" : ""}
+<br><br>
+
+  `;
 })
-
-.addTo(map);
-
-
-map.fitBounds(layer.getBounds());
-
+.catch(error => {
+  console.error(error);
+  alert("データの読み込みに失敗しました。Apps ScriptのURLやファイル名を確認してください。");
 });
-
-
 </script>
 
 </body>
