@@ -97,7 +97,7 @@ html, body {
   }
 
   .search-panel {
-    top: 145px;
+    top: 90px;
     left: 10px;
     width: 42%;
     font-size: 12px;
@@ -119,7 +119,7 @@ html, body {
   }
 
   #summary {
-    top: 145px;
+    top: 90px;
     right: 10px;
     width: 42%;
     max-height: 34vh;
@@ -194,9 +194,9 @@ html, body {
 <div class="panel legend">
   <strong>進捗状態</strong><br>
   <span class="color-box" style="background:#d9d9d9"></span>未着手（0%）<br>
-  <span class="color-box" style="background:#ffd600"></span>0–50%<br>
-  <span class="color-box" style="background:#0070ff"></span>51–80%<br>
-  <span class="color-box" style="background:#00b050"></span>81–100%<br>
+  <span class="color-box" style="background:#ff3333"></span>0–50%<br>
+  <span class="color-box" style="background:#ffd600"></span>51–80%<br>
+  <span class="color-box" style="background:#0070ff"></span>81–100%<br>
 </div>
 
 <script>
@@ -213,13 +213,13 @@ let cityLayers = {};
 
 function getColor(percent) {
 
-  if (percent === 0) return "#d9d9d9"; // 未着手（薄グレー）
+  if (percent === 0) return "#d9d9d9"; // 未着手（薄めのグレー）
 
-  if (percent <= 50) return "#ffd600"; // 0-50%（濃い黄色）
+  if (percent <= 50) return "#ff3333"; // 0-50%（赤）
 
-  if (percent <= 80) return "#0070ff"; // 51-80%（濃い青）
+  if (percent <= 80) return "#ffd600"; // 51-80%（黄色）
 
-  return "#00b050"; // 81-100%（濃い緑）
+  return "#0070ff"; // 81-100%（青）
 
 }
 
@@ -536,7 +536,7 @@ const completedCount = cityList.filter(c => c.percent >= 100).length;
     <br>
 <strong>未着手市町村</strong><br>
 ${missingCities.length}件<br>
-${missingCities.slice(0, 10).map(name => `
+${missingCities.slice(0, 15).map(name => `
   <span
     style="cursor:pointer;color:#0070ff;text-decoration:underline"
     onclick="jumpToCity('${name}')"
@@ -547,12 +547,6 @@ ${missingCities.slice(0, 10).map(name => `
 ${missingCities.length > 10 ? " ほか" : ""}
 <br><br>
 
-    <strong>進捗トップ5</strong>
-    ${top5.map((c, i) => `
-      <div class="rank-item">
-        ${i + 1}. ${c.cityName}：${c.percent.toFixed(1)}%
-      </div>
-    `).join("")}
   `;
 })
 .catch(error => {
