@@ -12,23 +12,33 @@
 <style>
 
 
-/* ===== スマホ表示文字サイズ拡大ここから ===== */
+/* ===== スマホ表示最適化ここから ===== */
 @media (max-width: 600px) {
 
-  body {
-    font-size: 1.8em;
-  }
-
-  .panel {
-    font-size: 1.2em;
+  .leaflet-popup-content {
+    font-size: 18px;
+    line-height: 1.6;
   }
 
   .legend {
-    font-size: 1.2em;
+    font-size: 14px;
+  }
+
+  #summary {
+    font-size: 14px;
+    max-width: 70%;
+  }
+
+@media (max-width: 600px) {
+
+  #summary {
+    top: 80px;
   }
 
 }
-/* ===== スマホ表示文字サイズ拡大ここまで ===== */
+
+}
+/* ===== スマホ表示最適化ここまで ===== */
 
 
 
