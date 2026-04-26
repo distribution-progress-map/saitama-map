@@ -203,26 +203,27 @@ left:20px;
 @media (max-width:600px){
 
   .title{
-    top:6px;
-    left:8px;
-    right:8px;
-    transform:none;
-    font-size:12px;
-    padding:6px 8px;
-    max-width:none;
+    top:8px;
+    left:50%;
+    right:auto;
+    transform:translateX(-50%);
+    font-size:11px;
+    padding:6px 10px;
+    width:auto;
+    max-width:92%;
     white-space:nowrap;
-    overflow:visible;
   }
 
   .contact-panel{
-    top:32px;
+    top:62px;
     right:8px;
     padding:5px 8px;
-  } 
+  }
 
   .contact-panel button{
     font-size:11px;
-    padding:4px 7px;
+    padding:4px 8px;
+    white-space:nowrap;
   }
 
   .reset-panel{
@@ -257,45 +258,28 @@ left:20px;
 
   .admin-history-panel{
     right:6px;
-    bottom:52px;
+    bottom:58px;
     top:auto;
     width:170px;
     height:90px;
+    max-height:none;
     font-size:11px;
     padding:6px;
   }
 
   #adminHistoryContent{
-    height:60px;
+    height:55px;
+  }
+
+  .history-title{
+    margin-bottom:2px;
   }
 
   .scroll-hint{
+    height:14px;
+    line-height:14px;
     font-size:10px;
-    height:16px;
-    line-height:16px;
   }
-
-  .leaflet-popup-content-wrapper{
-    padding:6px;
-  }
-
-  .leaflet-popup-content{
-    margin:6px 8px;
-    font-size:12px;
-    line-height:1.4;
-    max-width:180px;
-  }
-
-  .leaflet-popup-tip-container{
-    margin-top:-2px;
-  }
-
-  .leaflet-popup-close-button{
-    font-size:16px;
-    right:6px;
-    top:4px;
-  }
-
 
 }
 /* ===== スマホ専用レイアウト調整ここまで ===== */
