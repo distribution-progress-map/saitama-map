@@ -935,7 +935,8 @@ layer.bindPopup(
 
 layer.on("click", function() {
   map.fitBounds(layer.getBounds(), {
-    padding: [40, 40]
+    padding: [40, 40],
+    maxZoom: 11
   });
 });
 
@@ -1231,7 +1232,8 @@ layer.bindPopup(
 
       layer.on("click", function() {
         map.fitBounds(layer.getBounds(), {
-        padding: [40, 40]
+          padding: [40, 40],
+          maxZoom: 11
         });
       });
 
@@ -1276,7 +1278,8 @@ function searchAreaById(){
   }
 
   map.fitBounds(layer.getBounds(), {
-    padding: [40, 40]
+    padding: [40, 40],
+    maxZoom: 11
   });
 
   openPopupAbove(layer);
