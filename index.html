@@ -3,580 +3,1461 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@900&display=swap" rel="stylesheet">
-<title>埼玉進捗マップ</title>
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<title>配布エリア共有マップ</title>
+
+<link rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
 <style>
-html, body {
-  margin: 0;
-  height: 100%;
-  font-family: sans-serif;
+
+html,body{
+height:100%;
+margin:0;
 }
 
-#map {
-  height: 100%;
+#map{
+height:100%;
 }
 
-.panel {
-  position: absolute;
-  background: white;
-  z-index: 1000;
-  padding: 12px;
-  border-radius: 8px;
-  font-size: 14px;
-  box-shadow: 0 0 8px rgba(0,0,0,0.25);
+.panel{
+position:absolute;
+background:white;
+padding:10px;
+z-index:1000;
+border-radius:8px;
+box-shadow:0 0 6px rgba(0,0,0,.3);
 }
 
-.title-panel {
-  top: 26px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: clamp(12px, 2vw, 24px);
-  font-weight: 900;
-  text-align: center;
-  max-width: 90%;
-  font-family: "Zen Kaku Gothic New", sans-serif;
-  letter-spacing: 0.08em;
-  background: rgba(255,255,255,0.92);
-  padding: 8px 18px;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0,0,0,0.18);
+.title{
+top:15px;
+left:50%;
+transform:translateX(-50%);
+font-size:20px;
+font-weight:bold;
 }
 
-.search-panel {
-  top: 20px;
-  left: 20px;
-  width: 260px;
+
+.error-text{
+  color:red;
+  font-size:14px;
+  margin-bottom:8px;
+  font-weight:bold;
 }
 
-.search-panel input {
-  width: 170px;
-  padding: 6px;
+
+.modal-bg{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.45);
+  z-index:3000;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-.search-panel button {
-  padding: 6px 10px;
+.modal-box{
+  background:white;
+  width:90%;
+  max-width:420px;
+  padding:18px;
+  border-radius:12px;
+  box-shadow:0 0 12px rgba(0,0,0,.35);
+  font-size:15px;
 }
 
-.summary {
-  top: 20px;
-  right: 20px;
-  width: 250px;
+.modal-box h3{
+  margin-top:0;
 }
 
-.legend {
-  bottom: 20px;
-  right: 20px;
-  line-height: 1.7;
+.modal-box label{
+  display:block;
+  margin-top:10px;
+  font-weight:bold;
 }
 
-.color-box {
-  display: inline-block;
-  width: 14px;
-  height: 14px;
-  margin-right: 6px;
-  border: 1px solid #333;
+.modal-box label span{
+  color:#888;
+  font-weight:normal;
+  font-size:12px;
 }
 
-.rank-item {
-  margin-top: 6px;
+.modal-box input,
+.modal-box select,
+.modal-box textarea{
+  width:100%;
+  box-sizing:border-box;
+  padding:8px;
+  margin-top:4px;
 }
 
-/* ===== スマホ表示最適化ここから ===== */
-@media (max-width: 600px) {
+.date-row{
+  display:flex;
+  gap:6px;
+}
 
-  .title-panel {
-    top: 12px;
-    z-index: 1200;
-    font-size: clamp(14px, 3vw, 18px);
-    padding: 8px 14px;
-    max-width: 86%;
+.date-row select{
+  width:33.3%;
+}
+
+.modal-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+
+.modal-buttons button{
+  flex:1;
+  padding:10px;
+}
+
+.history-item{
+  border-bottom:1px solid #bbb;
+  padding:8px 0;
+  margin-bottom:6px;
+}
+
+
+.id-search-panel{
+  top:350px;
+  right:15px;
+  width:210px;
+  padding:6px;
+}
+
+.id-search-panel input{
+  width:135px;
+  padding:5px;
+  font-size:12px;
+}
+
+.id-search-panel button{
+  padding:5px 8px;
+  font-size:12px;
+}
+
+
+/* ===== 管理者連絡ボタンここから ===== */
+.contact-panel{
+  top:45px;
+  right:15px;
+  width:auto;
+  padding:8px 14px;
+  display:inline-block;
+}
+
+.contact-panel button{
+  width:auto;
+  padding:6px 10px;
+  font-size:13px;
+  margin:0 auto;
+  display:block;
+}
+/* ===== 管理者連絡ボタンここまで ===== */
+
+
+
+/* ===== ポップアップ管理者ボタンここから ===== */
+
+.popup-admin-btn{
+  background:#eeeeee;
+  border:1px solid #cccccc;
+  color:#444444;
+  font-size:12px;
+  padding:4px 8px;
+  border-radius:4px;
+  cursor:pointer;
+}
+
+.popup-admin-btn:hover{
+  background:#e2e2e2;
+}
+
+/* ===== ポップアップ管理者ボタンここまで ===== */
+
+
+
+.error-text{
+  color:red;
+  font-size:13px;
+  margin-top:4px;
+}
+
+
+
+.reset-panel{
+bottom:20px;
+left:20px;
+}
+
+@media (max-width:600px){
+
+  .reset-panel{
+    bottom:90px;
+    left:10px;
   }
 
-  .search-panel {
-    top: 85px;
-    left: 10px;
-    width: 42%;
-    font-size: 12px;
-    padding: 8px;
+  .admin-history-panel{
+    right:10px;
+    top:95px;
+    width:42%;
+    max-height:45vh;
+    font-size:11px;
   }
 
-  .search-panel input {
-    width: 100%;
-    box-sizing: border-box;
-    font-size: 12px;
-    padding: 5px;
-    margin-bottom: 6px;
-  }
-
-  .search-panel button {
-    width: 100%;
-    font-size: 12px;
-    padding: 5px;
-  }
-
-  #summary {
-    top: 85px;
-    right: 10px;
-    width: 42%;
-    max-height: 26vh;
-    overflow-y: auto;
-    font-size: 12px;
-    line-height: 1.45;
-    padding: 8px;
-    position: absolute;
-  }
-
-  #summary::after {
-    content: "▼ 下にスクロール";
-    position: sticky;
-    bottom: 0;
-    display: block;
-    background: linear-gradient(to top, white 70%, rgba(255,255,255,0));
-    padding-top: 18px;
-    padding-bottom: 2px;
-    text-align: center;
-    font-size: 11px;
-    color: #555;
-  }
-
-  .legend {
-    right: 10px;
-    bottom: 38px;
-    font-size: 12px;
-    padding: 8px;
-    line-height: 1.45;
-  }
-
-  .color-box {
-    width: 11px;
-    height: 11px;
-  }
-
-  .leaflet-popup-content {
-    font-size: 14px;
-    line-height: 1.6;
-  }
-
-  body.popup-open .panel {
-    display: none;
-  }
-
-  body.popup-open .leaflet-popup {
-    display: block;
-  }
 }
-/* ===== スマホ表示最適化ここまで ===== */
+
+
+
+/* ===== 描画中ボタン日本語表示ここから ===== */
+
+/* Finish を隠して日本語を表示 */
+.leaflet-draw-actions a[title="Finish drawing"] {
+  font-size: 0;
+}
+
+.leaflet-draw-actions a[title="Finish drawing"]::after {
+  content: "囲み終わり";
+  font-size: 13px;
+}
+
+/* Cancel を隠して日本語を表示 */
+.leaflet-draw-actions a[title="Cancel drawing"] {
+  font-size: 0;
+}
+
+.leaflet-draw-actions a[title="Cancel drawing"]::after {
+  content: "キャンセル";
+  font-size: 13px;
+}
+
+/* Delete last point は環境によって title が違うことがあるので両対応 */
+.leaflet-draw-actions a[title="Delete last point"] {
+  font-size: 0;
+}
+
+.leaflet-draw-actions a[title="Delete last point"]::after {
+  content: "1つ戻る";
+  font-size: 13px;
+}
+
+/* ===== 描画中ボタン日本語表示ここまで ===== */
+
+
+
+/* ===== 修正依頼フォームの日付欄調整ここから ===== */
+#requestFormModal .date-row {
+  display: block;
+}
+
+#requestFormModal .date-row select {
+  width: 100%;
+  margin-bottom: 6px;
+}
+/* ===== 修正依頼フォームの日付欄調整ここまで ===== */
+
+
+
+/* ===== 管理者修正履歴パネルここから ===== */
+
+.admin-history-panel{
+  top:100px;
+  right:15px;
+  width:210px;
+  height:220px;
+  overflow:hidden;
+  font-size:13px;
+  line-height:1.5;
+}
+
+.history-title{
+  margin-bottom:4px;
+}
+
+#adminHistoryContent{
+  height:180px;
+  overflow-y:auto;
+}
+
+.scroll-hint{
+  height:18px;
+  line-height:18px;
+  text-align:center;
+  font-size:11px;
+  color:#888;
+  border-top:1px solid #eee;
+}
+
+/* ===== 管理者修正履歴パネルここまで ===== */
+
+
 </style>
-
 </head>
 
 <body>
+
 <div id="map"></div>
 
-<div class="panel title-panel" id="mapTitle">
-  読み込み中...
+<div id="areaFormModal" class="modal-bg" style="display:none;">
+  <div class="modal-box">
+    <h3>配布エリア登録</h3>
+
+    <div id="typeError" class="error-text"></div>
+
+    <label>※種類</label>
+<select id="formType">
+  <option value="">選択する</option>
+  <option value="配布予定">配布予定</option>
+  <option value="配布済">配布済</option>
+</select>
+
+
+
+
+<label>配布予定日または配布実施日</label>
+<div class="date-row">
+  <select id="formYear">
+    <option value="">年（未入力も可）</option>
+    <option value="2026">2026</option>
+    <option value="2027">2027</option>
+  </select>
+
+  <select id="formMonth">
+    <option value="">月（未入力も可）</option>
+  </select>
+
+  <select id="formDay">
+    <option value="">日（未入力も可）</option>
+  </select>
 </div>
 
-<div class="panel search-panel">
-  <strong>市町村検索</strong><br><br>
-  <input id="searchInput" type="text" placeholder="例：川越市">
-  <button onclick="searchCity()">検索</button>
+<label>枚数</label>
+<input id="formCount" type="text" placeholder="未入力も可">
+
+<label>担当者</label>
+<input id="formPerson" type="text" placeholder="匿名可・未入力も可">
+
+<label>備考</label>
+<textarea id="formNote" placeholder="未入力も可"></textarea>
+
+<label>※合言葉</label>
+<input id="formPass" type="password" placeholder="合言葉">
+
+
+
+    <div class="modal-buttons">
+      <button onclick="submitAreaForm()">OK</button>
+      <button onclick="cancelAreaForm()">キャンセル</button>
+    </div>
+  </div>
 </div>
 
-<div class="panel summary" id="summary">
-  読み込み中...
+
+<div id="doneFormModal" class="modal-bg" style="display:none;">
+  <div class="modal-box">
+    <h3>配布済にする</h3>
+
+    <div id="doneError" class="error-text"></div>
+
+    <label>種類</label>
+    <input type="text" value="配布済" disabled>
+
+    <label>配布予定日または配布実施日</label>
+    <div class="date-row">
+      <select id="doneYear">
+        <option value="">年（未入力も可）</option>
+        <option value="2026">2026</option>
+        <option value="2027">2027</option>
+      </select>
+
+      <select id="doneMonth">
+        <option value="">月（未入力も可）</option>
+      </select>
+
+      <select id="doneDay">
+        <option value="">日（未入力も可）</option>
+      </select>
+    </div>
+
+    <label>枚数</label>
+    <input id="doneCount" type="text" placeholder="未入力も可">
+
+    <label>担当者</label>
+    <input id="donePerson" type="text" placeholder="匿名可・未入力も可">
+
+    <label>備考</label>
+    <textarea id="doneNote" placeholder="未入力も可"></textarea>
+
+    <label>※合言葉</label>
+    <input id="donePass" type="password" placeholder="合言葉">
+
+    <div class="modal-buttons">
+      <button onclick="submitDoneForm()">配布済にする</button>
+      <button onclick="cancelDoneForm()">キャンセル</button>
+    </div>
+  </div>
 </div>
 
-<div class="panel legend">
-  <strong>進捗状態</strong><br>
-  <span class="color-box" style="background:#d9d9d9"></span>未着手（0%）<br>
-  <span class="color-box" style="background:#ff3333"></span>0–50%<br>
-  <span class="color-box" style="background:#ffd600"></span>51–80%<br>
-  <span class="color-box" style="background:#0070ff"></span>81–100%<br>
+
+<div id="requestFormModal" class="modal-bg" style="display:none;">
+  <div class="modal-box">
+    <h3>修正依頼</h3>
+
+    <div id="requestError" class="error-text"></div>
+
+    <label>修正したい項目だけ入力</label>
+
+    <label>種類</label>
+    <select id="requestType">
+      <option value="">未入力も可</option>
+      <option value="配布予定">配布予定</option>
+      <option value="配布済">配布済</option>
+    </select>
+
+    <label>配布予定日または配布実施日</label>
+    <div class="date-row">
+  　　<select id="requestYear">
+    　　<option value="">年（未入力も可）</option>
+    　　<option value="2026">2026</option>
+    　　<option value="2027">2027</option>
+  　　</select>
+
+  　　<select id="requestMonth">
+    　　<option value="">月（未入力も可）</option>
+  　　</select>
+
+  <select id="requestDay">
+    <option value="">日（未入力も可）</option>
+  </select>
+</div>
+
+    <label>枚数</label>
+    <input id="requestCount" type="text" placeholder="未入力も可">
+
+    <label>担当者</label>
+    <input id="requestPerson" type="text" placeholder="未入力も可">
+
+    <label>備考</label>
+    <textarea id="requestNote" placeholder="未入力も可"></textarea>
+
+    <label>※合言葉</label>
+    <input id="requestPass" type="password" placeholder="合言葉">
+
+    <div class="modal-buttons">
+      <button onclick="submitModifyRequest()">修正依頼</button>
+      <button onclick="cancelRequestForm()">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+
+<div id="requestChoiceModal" class="modal-bg" style="display:none;">
+  <div class="modal-box">
+
+    <h3>管理者へ依頼</h3>
+
+    <p>どちらの依頼を送信しますか？</p>
+
+    <div class="modal-buttons">
+      <button onclick="chooseDeleteRequest()">削除依頼</button>
+      <button onclick="chooseModifyRequest()">修正依頼</button>
+      <button onclick="cancelRequestChoice()">キャンセル</button>
+    </div>
+
+  </div>
+</div>
+
+
+
+<div class="panel title" id="titleBox">
+読み込み中...
+</div>
+
+
+<!-- ===== 管理者連絡ボタンここから ===== -->
+<div class="panel contact-panel">
+  <button onclick="openContactForm()">
+    管理者へ連絡
+  </button>
+</div>
+<!-- ===== 管理者連絡ボタンここまで ===== -->
+
+
+
+
+<div id="contactFormModal" class="modal-bg" style="display:none;">
+  <div class="modal-box">
+    <h3>管理者へ連絡</h3>
+
+    <div id="contactError" class="error-text"></div>
+
+    <p style="font-size:13px;color:#666;">
+      連絡先が空欄の場合は「管理者修正履歴」より返信させていただきます。
+    </p>
+
+    <label>※タイトル</label>
+    <input id="contactTitle" type="text">
+
+    <label>※内容</label>
+    <textarea id="contactMessage"></textarea>
+
+    <label>名前</label>
+    <input id="contactName" type="text" placeholder="未入力も可">
+
+    <label>メールアドレス</label>
+    <input id="contactEmail" type="email" placeholder="未入力も可">
+
+    <label>備考</label>
+    <textarea id="contactNote" placeholder="未入力も可"></textarea>
+
+    <label>※合言葉</label>
+    <input id="contactPass" type="password" placeholder="合言葉">
+
+    <div class="modal-buttons">
+      <button onclick="submitContactForm()">送信</button>
+      <button onclick="cancelContactForm()">キャンセル</button>
+    </div>
+  </div>
+</div>
+
+<div class="panel admin-history-panel" id="adminHistoryBox">
+
+  <div class="history-title">
+    <strong>管理者修正履歴</strong>
+  </div>
+
+  <div id="adminHistoryContent">
+    読み込み中...
+  </div>
+
+  <div class="scroll-hint">
+    ▼スクロールできます
+  </div>
+
+</div>
+
+
+<div class="panel id-search-panel">
+  <input id="idSearchInput" type="text" placeholder="ID検索">
+  <button onclick="searchAreaById()">検索</button>
+</div>
+
+
+<div class="panel reset-panel">
+<button onclick="resetView()">全体表示に戻る</button>
 </div>
 
 <script>
-const SHEET_URL = "https://script.google.com/macros/s/AKfycbw5Ik32lhEQcAQ4j-FDEcD_xHJwJNPUvsFMqreNTY5uJuyg737OCXv5UwjMu8t22RWxNg/exec";
 
-const map = L.map('map').setView([35.9,139.5],9);
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbysYcR6z1nZ3iaDa8hVvwO50-REyUzzbHf5U2hgdhEoBpTtdK4W99OL_iZzI6WmntYeBg/exec";
+
+const map=L.map("map").setView([35.9,139.5],9);
 
 L.tileLayer(
-  'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-  { attribution:'© OpenStreetMap contributors' }
+"https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+{attribution:"©OpenStreetMap"}
 ).addTo(map);
 
-let cityLayers = {};
 
-function getColor(percent) {
 
-  if (percent === 0) return "#d9d9d9"; // 未着手（薄めのグレー）
+const drawnItems=new L.FeatureGroup();
+map.addLayer(drawnItems);
 
-  if (percent <= 50) return "#ff3333"; // 0-50%（赤）
+const plannedItemsById = {};
+const areaItemsById = {};
+const areaLayersById = {};
+let currentRequestId = null;
 
-  if (percent <= 80) return "#ffd600"; // 51-80%（黄色）
 
-  return "#0070ff"; // 81-100%（青）
+// ===== 描画ツール日本語化ここから =====
+
+L.drawLocal.draw.toolbar.buttons.polygon = "配布エリアを描く";
+
+L.drawLocal.draw.handlers.polygon.tooltip.start =
+"地図をクリックして配布エリアの1点目を決めてください";
+
+L.drawLocal.draw.handlers.polygon.tooltip.cont =
+"続けてクリックして範囲を囲んでください。最初の点をクリックすると範囲が確定します";
+
+L.drawLocal.draw.handlers.polygon.tooltip.end =
+"最初の点をクリックすると範囲が確定します";
+
+/* ←ここが重要追加 */
+
+L.drawLocal.draw.handlers.polygon.finish = {
+  title: "この範囲で登録します",
+  text: "この範囲で登録"
+};
+
+L.drawLocal.draw.toolbar.undo = {
+  title: "直前の点を削除",
+  text: "1つ戻る"
+};
+
+L.drawLocal.draw.toolbar.cancel = {
+  title: "描画を中止します",
+  text: "キャンセル"
+};
+
+// ===== 描画ツール日本語化ここまで =====
+
+
+
+
+
+
+const drawControl=new L.Control.Draw({
+
+draw:{
+  polygon:true,
+  rectangle:false,
+  circle:false,
+  marker:false,
+  polyline:false,
+  circlemarker:false
+},
+
+edit:{
+featureGroup:drawnItems,
+edit:false,
+remove:false
+}
+
+});
+
+
+map.addControl(drawControl);
+
+
+
+fetch("saitama.geojson")
+
+.then(res=>res.json())
+
+.then(data=>{
+
+const boundary=L.geoJSON(data,{
+
+style:{
+color:"#000",
+weight:2,
+fill:true,
+fillColor:"#dddddd",
+fillOpacity:0.5
+},
+
+onEachFeature:function(feature,layer){
+
+layer.on("click",function(){
+
+map.fitBounds(layer.getBounds(),{
+
+paddingTopLeft:[20,20],
+paddingBottomRight:[320,20]
+
+});
+
+});
 
 }
 
-function getStatus(percent, hasData) {
-  if (!hasData) return "未入力";
-  if (percent === 0) return "未着手";
-  if (percent >= 100) return "完了";
-  return "進行中";
+}).addTo(map);
+
+
+
+map.fitBounds(boundary.getBounds());
+
+window.fullBounds=boundary.getBounds();
+
+});
+
+
+
+function getColor(type){
+
+if(type==="配布済") return "#ff3333";
+
+if(type==="配布予定") return "#0066ff";
+
+return "#999";
+
 }
 
-function getCityName(feature) {
-  return feature.properties.N03_004 || feature.properties.name || feature.properties.NAME || "";
+
+function formatDateSimple(value){
+
+  if(!value) return "";
+
+  const d = new Date(value);
+
+  if(isNaN(d)) return value;
+
+  return d.getFullYear() + "/" +
+         (d.getMonth()+1) + "/" +
+         d.getDate();
+
 }
 
-function numberValue(value) {
-  if (value === "" || value === null || value === undefined) return 0;
-  return Number(String(value).replace(/,/g, "")) || 0;
-}
 
-function formatNumber(value) {
-  return Number(value || 0).toLocaleString();
-}
-
-function formatDate(value) {
-  if (!value) return "";
-  const date = new Date(value);
-  if (!isNaN(date)) {
-    return `${date.getMonth() + 1}/${date.getDate()}`;
-  }
-  return value;
-}
-
-function searchCity() {
-  const keyword = document.getElementById("searchInput").value.trim();
-
-  if (!keyword) {
-    alert("市町村名を入力してください");
-    return;
-  }
-
-  const matchedName = Object.keys(cityLayers).find(name =>
-    name.includes(keyword)
+function openPopupAbove(layer) {
+  const bounds = layer.getBounds();
+  const topCenter = L.latLng(
+    bounds.getNorth(),
+    (bounds.getEast() + bounds.getWest()) / 2
   );
 
-  if (!matchedName) {
-    alert("該当する市町村が見つかりませんでした");
-    return;
-  }
-
-  const layer = cityLayers[matchedName];
-
-  map.fitBounds(layer.getBounds(), {
-    padding: [40, 40]
-  });
-
-  layer.openPopup();
+  layer.openPopup(topCenter);
 }
 
-function jumpToCity(cityName) {
-  const layer = cityLayers[cityName];
 
-  if (!layer) {
-    alert("市町村データが見つかりません");
-    return;
+function makePopupHtml(row, isPlanned){
+
+  let html =
+    "種類：" + row["種類"] + "<br>" +
+    "実施日：" + formatDateSimple(row["実施日"]) + "<br>" +
+    "枚数：" + row["枚数"] + "<br>" +
+    "担当：" + row["担当者"] + "<br>" +
+    "備考：" + row["備考"];
+
+  if(isPlanned){
+    html += `<br><br>
+      <button onclick="convertPlannedToDone('${row["ID"]}')">
+        配布済にする
+      </button>`;
   }
 
-  map.fitBounds(layer.getBounds(), {
-    padding: [40, 40]
-  });
+  html += `<br><br>
+    <button class="popup-admin-btn"
+      onclick="openRequestMenu('${row["ID"]}')">
+      管理者へ修正依頼
+    </button>`;
 
-  layer.openPopup();
-}
-
-function getProgressBar(percent) {
-
-  const color = getColor(percent);
-
-  return `
-    <div style="
-      width: 160px;
-      height: 12px;
-      background: #eeeeee;
-      border: 1px solid #999;
-      border-radius: 8px;
-      overflow: hidden;
-      display: inline-block;
-      vertical-align: middle;
-      margin-right: 6px;
-    ">
-      <div style="
-        width: ${Math.min(percent, 100)}%;
-        height: 100%;
-        background: ${color};
-      "></div>
+  html += `
+    <hr style="margin:10px 0; border:none; border-top:1px dashed #ccc;">
+    <div style="font-size:12px; color:#666;">
+      管理者用ID：${row["ID"]}<br>
+      <button class="popup-admin-btn"
+        onclick="copyAreaId('${row["ID"]}')"
+        style="margin-top:4px; font-size:11px;">
+        IDをコピー
+      </button>
     </div>
-    ${percent.toFixed(1)}%
   `;
+
+  return html;
+}
+
+function copyAreaId(id){
+
+  navigator.clipboard.writeText(id)
+    .then(function(){
+      alert("IDをコピーしました");
+    })
+    .catch(function(){
+      prompt("このIDをコピーしてください", id);
+    });
+
+}
+
+window.copyAreaId = copyAreaId;
+
+
+function renderAdminHistory(areas){
+
+  const histories = areas.filter(row =>
+    row["管理者修正履歴"]
+  );
+
+  const box = document.getElementById("adminHistoryContent");
+
+  if(histories.length === 0){
+    box.innerHTML = "履歴なし";
+    return;
+  }
+
+  box.innerHTML =
+    histories.reverse().map(row => `
+      <div class="history-item">
+
+        修正依頼日：
+        ${formatDateSimple(row["修正依頼日時"]) || ""}<br>
+
+        管理者修正日時：
+        ${formatDateSimple(row["管理者修正日時"]) || ""}<br>
+
+        内容：<br>
+        ${String(row["管理者修正履歴"])
+          .replace(/\n/g,"<br>")}
+
+      </div>
+    `).join("");
+
 }
 
 
+fetch(SCRIPT_URL)
 
-document.addEventListener("keydown", function(event) {
-  if (event.key === "Enter") {
-    const active = document.activeElement;
-    if (active && active.id === "searchInput") {
-      searchCity();
-    }
-  }
+.then(res=>res.json())
+
+.then(json=>{
+
+document.getElementById("titleBox")
+.textContent=json.title;
+
+renderAdminHistory(json.areas);
+
+const planned=[];
+const done=[];
+
+
+
+json.areas.forEach(row=>{
+
+if(!row["図形データ"])return;
+
+const geo=JSON.parse(row["図形データ"]);
+
+if(row["種類"]==="配布予定") planned.push({geo,row});
+
+if(row["種類"]==="配布済") done.push({geo,row});
+
 });
 
-Promise.all([
-  fetch('saitama.geojson').then(res => res.json()),
-  fetch(SHEET_URL).then(res => res.json())
-])
-.then(([geojson, sheetResponse]) => {
-
-    const mapTitle = sheetResponse.title || "埼玉進捗マップ";
-    const sheetData = sheetResponse.data || [];
-
-document.getElementById("mapTitle").textContent = mapTitle;
 
 
-  const dataByCity = {};
 
-  sheetData.forEach(row => {
-    const city = row["市町村名"];
-    if (!city) return;
 
-    if (!dataByCity[city]) {
-      dataByCity[city] = {
-        cityName: city,
-        totalHouseholds: 0,
-        distributedTotal: 0,
-        records: [],
-        latestDate: ""
+function drawLayer(item){
+
+const layer=L.geoJSON(item.geo,{
+
+style:{
+  color:getColor(item.row["種類"]),
+  fillColor:getColor(item.row["種類"]),
+  fillOpacity:item.row["種類"]==="配布済" ? 0.5 : 0.35
+}
+
+}).addTo(drawnItems);
+
+
+
+const isPlanned = item.row["種類"] === "配布予定";
+
+areaItemsById[item.row["ID"]] = item;
+
+areaLayersById[item.row["ID"]] = layer;
+
+if(isPlanned){
+  plannedItemsById[item.row["ID"]] = item;
+}
+
+layer.bindPopup(
+  makePopupHtml(item.row, isPlanned)
+);
+
+
+layer.on("click", function() {
+  map.fitBounds(layer.getBounds(), {
+    padding: [40, 40]
+  });
+});
+
+
+
+
+}
+
+async function convertPlannedToDone(id){
+
+  const item = plannedItemsById[id];
+
+  if(!item){
+    alert("配布予定データが見つかりません");
+    return;
+  }
+
+  const formData = await openDoneForm(item.row);
+
+  if(!formData) return;
+
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    body:JSON.stringify({
+          pass:formData.pass,
+      id:id + "（2）",
+      baseId:id,
+      type:"配布済",
+      date:formData.date,
+      count:formData.count,
+      person:formData.person,
+      note:formData.note,
+      geometry:item.geo
+    })
+  })
+  .then(res=>res.json())
+  .then(result=>{
+
+    if(result.status==="OK"){
+
+      const doneLayer = L.geoJSON(item.geo,{
+        style:{
+          color:getColor("配布済"),
+          fillColor:getColor("配布済"),
+          fillOpacity:0.5
+        }
+      }).addTo(drawnItems);
+
+      const doneRow = {
+        "ID": id + "（2）",
+        "種類": "配布済",
+        "実施日": formData.date,
+        "枚数": formData.count,
+        "担当者": formData.person,
+        "備考": formData.note
       };
+
+doneLayer.bindPopup(
+  makePopupHtml(doneRow, false)
+);
+
+      openPopupAbove(doneLayer);
+
+    }else{
+      alert("合言葉が違います");
     }
 
-    const households = numberValue(row["全戸数"]);
-    const distributed = numberValue(row["配布個数"]);
+  });
 
-    if (households > 0) {
-      dataByCity[city].totalHouseholds = households;
+}
+
+
+function openRequestMenu(id){
+
+  currentRequestId = id;
+
+  document.getElementById("requestChoiceModal").style.display = "flex";
+
+}
+
+
+function chooseDeleteRequest(){
+
+  document.getElementById("requestChoiceModal").style.display = "none";
+
+  const pass = prompt("合言葉");
+  if(!pass) return;
+
+  const ok = confirm("削除依頼を送信してよろしいですか？");
+  if(!ok) return;
+
+  sendRequestToSheet(
+    currentRequestId,
+    pass,
+    "【削除依頼】このエリアの削除をお願いします。"
+  );
+
+}
+
+
+function chooseModifyRequest(){
+
+  document.getElementById("requestChoiceModal").style.display = "none";
+
+  openModifyRequestForm(currentRequestId);
+
+}
+
+function cancelRequestChoice(){
+  document.getElementById("requestChoiceModal").style.display = "none";
+  currentRequestId = null;
+}
+
+window.chooseDeleteRequest = chooseDeleteRequest;
+window.chooseModifyRequest = chooseModifyRequest;
+window.cancelRequestChoice = cancelRequestChoice;
+
+
+function sendDeleteRequest(id){
+
+  const pass = prompt("合言葉");
+  if(!pass) return;
+
+  const ok = confirm("削除依頼を送信してよろしいですか？");
+  if(!ok) return;
+
+  sendRequestToSheet(id, pass, "【削除依頼】このエリアの削除をお願いします。");
+
+}
+
+function openModifyRequestForm(id){
+
+  currentRequestId = id;
+
+  document.getElementById("requestType").value = "";
+  document.getElementById("requestYear").value = "";
+  document.getElementById("requestMonth").value = "";
+  document.getElementById("requestDay").value = "";
+  document.getElementById("requestCount").value = "";
+  document.getElementById("requestPerson").value = "";
+  document.getElementById("requestNote").value = "";
+  document.getElementById("requestPass").value = "";
+  document.getElementById("requestError").textContent = "";
+
+  document.getElementById("requestFormModal").style.display = "flex";
+
+}
+
+function submitModifyRequest(){
+
+  const pass = document.getElementById("requestPass").value;
+  const errorBox = document.getElementById("requestError");
+
+  errorBox.textContent = "";
+
+  if(!pass){
+    errorBox.textContent = "※合言葉を入力してください";
+    return;
+  }
+
+
+
+  const requestYear = document.getElementById("requestYear").value;
+  const requestMonth = document.getElementById("requestMonth").value;
+  const requestDay = document.getElementById("requestDay").value;
+
+  const requestDate =
+    requestYear && requestMonth && requestDay
+    ? `${requestYear}/${requestMonth}/${requestDay}`
+    : "";
+
+
+  const requestText =
+    "【修正依頼】\n" +
+    "種類：" + document.getElementById("requestType").value + "\n" +
+    "日付：" + requestDate + "\n" +
+    "枚数：" + document.getElementById("requestCount").value + "\n" +
+    "担当者：" + document.getElementById("requestPerson").value + "\n" +
+    "備考：" + document.getElementById("requestNote").value;
+
+  const ok = confirm("修正依頼を送信しますか？");
+  if(!ok) return;
+
+  document.getElementById("requestFormModal").style.display = "none";
+
+  sendRequestToSheet(currentRequestId, pass, requestText);
+
+}
+
+window.submitModifyRequest = submitModifyRequest;
+window.cancelRequestForm = cancelRequestForm;
+
+function cancelRequestForm(){
+  document.getElementById("requestFormModal").style.display = "none";
+}
+
+function sendRequestToSheet(id, pass, requestText){
+
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"request",
+      id:id,
+      pass:pass,
+      requestText:requestText
+    })
+  })
+  .then(res=>res.json())
+  .then(result=>{
+
+    if(result.status==="OK"){
+      alert("管理者への依頼を送信しました");
+    }else if(result.status==="NG"){
+      alert("合言葉が違います");
+    }else{
+      alert("対象データが見つかりませんでした");
     }
 
-    dataByCity[city].distributedTotal += distributed;
+  });
 
-    if (distributed > 0 || row["実施日"] || row["実施者"] || row["備考"]) {
-      dataByCity[city].records.push({
-        date: row["実施日"] || "",
-        person: row["実施者"] || "",
-        count: distributed,
-        note: row["備考"] || ""
+}
+
+window.openRequestMenu = openRequestMenu;
+
+
+window.convertPlannedToDone = convertPlannedToDone;
+
+
+
+planned.forEach(drawLayer);
+done.forEach(drawLayer);
+
+});
+
+
+
+map.on("draw:created", async function(e){
+
+  const layer = e.layer;
+  const geo = layer.toGeoJSON();
+
+  const formData = await openAreaForm();
+
+  if(!formData) return;
+
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      pass:formData.pass,
+      type:formData.type,
+      date:formData.date,
+      count:formData.count,
+      person:formData.person,
+      note:formData.note,
+      geometry:geo
+    })
+  })
+  .then(res=>res.json())
+  .then(result=>{
+
+    if(result.status==="OK"){
+
+      layer.setStyle({
+      color:getColor(formData.type),
+      fillColor:getColor(formData.type),
+      fillOpacity:formData.type==="配布済" ? 0.5 : 0.35
       });
-    }
-  });
 
-  Object.values(dataByCity).forEach(city => {
-    city.percent = city.totalHouseholds > 0
-      ? city.distributedTotal / city.totalHouseholds * 100
-      : 0;
+      drawnItems.addLayer(layer);
 
-    city.status = getStatus(city.percent, true);
+    const newRow = {
+      "ID": result.id,
+      "種類": formData.type,
+      "実施日": formData.date,
+      "枚数": formData.count,
+      "担当者": formData.person,
+      "備考": formData.note
+    };
 
-    city.records.sort((a, b) => new Date(a.date) - new Date(b.date));
+    const isPlanned = formData.type === "配布予定";
 
-    const dates = city.records
-      .map(r => new Date(r.date))
-      .filter(d => !isNaN(d));
-
-    if (dates.length > 0) {
-      const latest = new Date(Math.max(...dates));
-      city.latestDate = `${latest.getFullYear()}/${latest.getMonth() + 1}/${latest.getDate()}`;
-    }
-  });
-
-  const layer = L.geoJSON(geojson, {
-    style: function(feature) {
-      const cityName = getCityName(feature);
-      const cityData = dataByCity[cityName];
-      const hasData = !!cityData;
-      const percent = hasData ? cityData.percent : 0;
-
-      return {
-        color: "black",
-        weight: 1,
-        fillColor: getColor(percent),
-        fillOpacity: 0.78
+    if(isPlanned){
+      plannedItemsById[newRow["ID"]] = {
+      geo: geo,
+      row: newRow
       };
-    },
+    }
 
-    onEachFeature: function(feature, layer) {
-      const cityName = getCityName(feature);
-      const cityData = dataByCity[cityName];
-
-      cityLayers[cityName] = layer;
+layer.bindPopup(
+  makePopupHtml(newRow, isPlanned)
+);
 
 
+      layer.on("click", function() {
+        map.fitBounds(layer.getBounds(), {
+        padding: [40, 40]
+        });
+      });
 
-      
-      // ===== 市クリックで詳細ページへ移動ここから =====
-layer.on("dblclick", function () {
 
-  const cityFileMap = {
-    "川越市": "kawagoe.html",
-    "熊谷市": "kumagaya.html",
-    "所沢市": "tokorozawa.html"
+      openPopupAbove(layer);
+
+    }else{
+      alert("合言葉が違います");
+    }
+
+  });
+
+});
+
+
+
+function resetView(){
+
+if(window.fullBounds){
+
+map.fitBounds(window.fullBounds);
+
+}
+
+}
+
+
+function searchAreaById(){
+
+  const id = document.getElementById("idSearchInput").value.trim();
+
+  if(!id){
+    alert("IDを入力してください");
+    return;
+  }
+
+  const layer = areaLayersById[id];
+
+  if(!layer){
+    alert("該当するIDのエリアが見つかりませんでした");
+    return;
+  }
+
+  map.fitBounds(layer.getBounds(), {
+    padding: [40, 40]
+  });
+
+  openPopupAbove(layer);
+
+}
+
+window.searchAreaById = searchAreaById;
+
+
+
+
+let areaFormResolver = null;
+
+function setupDateSelects(){
+  const month = document.getElementById("formMonth");
+  const day = document.getElementById("formDay");
+  const doneMonth = document.getElementById("doneMonth");
+  const doneDay = document.getElementById("doneDay");
+  const requestMonth = document.getElementById("requestMonth");
+  const requestDay = document.getElementById("requestDay");
+
+  for(let i=1; i<=12; i++){
+    month.innerHTML += `<option value="${i}">${i}</option>`;
+    doneMonth.innerHTML += `<option value="${i}">${i}</option>`;
+    requestMonth.innerHTML += `<option value="${i}">${i}</option>`;
+  }
+
+  for(let i=1; i<=31; i++){
+    day.innerHTML += `<option value="${i}">${i}</option>`;
+    doneDay.innerHTML += `<option value="${i}">${i}</option>`;
+    requestDay.innerHTML += `<option value="${i}">${i}</option>`;
+  }
+}
+
+setupDateSelects();
+
+function openAreaForm(){
+  document.getElementById("formType").value = "";
+  document.getElementById("formYear").value = "";
+  document.getElementById("formMonth").value = "";
+  document.getElementById("formDay").value = "";
+  document.getElementById("formCount").value = "";
+  document.getElementById("formPerson").value = "";
+  document.getElementById("formNote").value = "";
+  document.getElementById("formPass").value = "";
+  document.getElementById("typeError").textContent = "";
+
+  document.getElementById("areaFormModal").style.display = "flex";
+
+  return new Promise(resolve => {
+    areaFormResolver = resolve;
+  });
+}
+
+
+function submitAreaForm(){
+
+  const errorBox = document.getElementById("typeError");
+  errorBox.textContent = "";
+
+  const type = document.getElementById("formType").value;
+  const pass = document.getElementById("formPass").value;
+
+  if(!type){
+    errorBox.textContent = "※種類を選択してください";
+    return;
+  }
+
+  if(!pass){
+    errorBox.textContent = "※合言葉を入力してください";
+    return;
+  }
+
+  const year = document.getElementById("formYear").value;
+  const month = document.getElementById("formMonth").value;
+  const day = document.getElementById("formDay").value;
+
+  const date =
+    year && month && day
+    ? `${year}/${month}/${day}`
+    : "";
+
+  const data = {
+    type:type,
+    date:date,
+    count:document.getElementById("formCount").value,
+    person:document.getElementById("formPerson").value,
+    note:document.getElementById("formNote").value,
+    pass:pass
   };
 
-  const targetPage = cityFileMap[cityName];
+  document.getElementById("areaFormModal").style.display = "none";
+  areaFormResolver(data);
 
-  if (targetPage) {
-    window.location.href = targetPage;
-  }
-
-});
-// ===== 市クリックで詳細ページへ移動ここまで =====
-
-
-
-
-      if (!cityData) {
-        layer.bindPopup(`
-          <strong>${cityName}</strong><br><br>
-          ステータス：未入力
-        `);
-        return;
-      }
-
-      let historyHtml = "";
-
-      if (cityData.records.length > 0) {
-        historyHtml = cityData.records.map(record => {
-          const date = formatDate(record.date);
-          const person = record.person || "";
-          const count = record.count ? `${formatNumber(record.count)}件` : "";
-          const note = record.note || "";
-          return `${date}　${person}　${count}　${note}`;
-        }).join("<br>");
-      } else {
-        historyHtml = "履歴なし";
-      }
-
-      layer.bindPopup(`
-        <strong>${cityName}</strong><br><br>
-        ステータス：${cityData.status}<br>
-        達成率：${cityData.percent.toFixed(1)}%<br>
-        <br>
-        進捗：${getProgressBar(cityData.percent)}<br>
-        全戸数：${formatNumber(cityData.totalHouseholds)}件<br>
-        配布合計：${formatNumber(cityData.distributedTotal)}件<br>
-        最終実施日：${cityData.latestDate || "未登録"}<br>
-
-
-
-
-<br>
-        <strong>実施履歴：</strong><br>
-        ${historyHtml}
-      `);
-    }
-  }).addTo(map);
-
-  map.fitBounds(layer.getBounds());
-
-
-  // ===== スマホ：ポップアップ中はパネル非表示ここから =====
-function isSmartPhone() {
-  return window.matchMedia("(max-width: 600px)").matches;
 }
 
-map.on("popupopen", function () {
-  if (isSmartPhone()) {
-    document.body.classList.add("popup-open");
-  }
-});
 
-map.on("popupclose", function () {
-  if (isSmartPhone()) {
-    document.body.classList.remove("popup-open");
-  }
-});
-
-map.on("click", function () {
-  if (isSmartPhone()) {
-    document.body.classList.remove("popup-open");
-  }
-});
-// ===== スマホ：ポップアップ中はパネル非表示ここまで =====
+function cancelAreaForm(){
+  document.getElementById("areaFormModal").style.display = "none";
+  areaFormResolver(null);
+}
 
 
+let doneFormResolver = null;
 
+function splitDateValue(value){
+  if(!value) return {year:"", month:"", day:""};
 
-  const allCityNames = Object.keys(cityLayers);
+  const d = new Date(value);
 
-const missingCities = allCityNames.filter(name => {
-  const cityData = dataByCity[name];
-  return !cityData || cityData.distributedTotal === 0;
-});
-
-  const cityList = Object.values(dataByCity);
-
-  const notStartedCount = cityList.filter(c => c.percent === 0).length;
-const inProgressCount = cityList.filter(c => c.percent > 0 && c.percent < 100).length;
-const completedCount = cityList.filter(c => c.percent >= 100).length;
-
-  const totalDistributed = cityList.reduce((sum, c) => sum + c.distributedTotal, 0);
-  const totalHouseholds = cityList.reduce((sum, c) => sum + c.totalHouseholds, 0);
-  const overallPercent = totalHouseholds > 0 ? totalDistributed / totalHouseholds * 100 : 0;
-
-  const latestDates = cityList
-    .flatMap(c => c.records.map(r => new Date(r.date)))
-    .filter(d => !isNaN(d));
-
-  let latestText = "未登録";
-  if (latestDates.length > 0) {
-    const latest = new Date(Math.max(...latestDates));
-    latestText = `${latest.getFullYear()}/${latest.getMonth() + 1}/${latest.getDate()}`;
+  if(!isNaN(d)){
+    return {
+      year:String(d.getFullYear()),
+      month:String(d.getMonth()+1),
+      day:String(d.getDate())
+    };
   }
 
-  const top5 = cityList
-    .filter(c => c.totalHouseholds > 0)
-    .sort((a, b) => b.percent - a.percent)
-    .slice(0, 5);
+  const parts = String(value).split("/");
+  return {
+    year:parts[0] || "",
+    month:parts[1] || "",
+    day:parts[2] || ""
+  };
+}
 
-  document.getElementById("summary").innerHTML = `
-    <strong>埼玉進捗マップ</strong><br><br>
-    全体達成率：${overallPercent.toFixed(1)}%<br>
-    配布合計：${formatNumber(totalDistributed)}戸<br>
-    対象戸数：${formatNumber(totalHouseholds)}戸<br>
-    最終更新：${latestText}<br><br>
+function openDoneForm(row){
+  const dateParts = splitDateValue(row["実施日"]);
 
-<strong>進捗状況</strong><br>
-未着手：${notStartedCount}<br>
-進行中：${inProgressCount}<br>
-完了：${completedCount}<br><br>
+  document.getElementById("doneYear").value = dateParts.year;
+  document.getElementById("doneMonth").value = dateParts.month;
+  document.getElementById("doneDay").value = dateParts.day;
 
-    <br>
-<strong>未着手市町村</strong><br>
-${missingCities.length}件<br>
-${missingCities.slice(0, 15).map(name => `
-  <span
-    style="cursor:pointer;color:#0070ff;text-decoration:underline"
-    onclick="jumpToCity('${name}')"
-  >
-    ${name}
-  </span>
-`).join("、")}
-${missingCities.length > 15 ? " ほか" : ""}
-<br><br>
+  document.getElementById("doneCount").value = row["枚数"] || "";
+  document.getElementById("donePerson").value = row["担当者"] || "";
+  document.getElementById("doneNote").value = row["備考"] || "";
+  document.getElementById("donePass").value = "";
+  document.getElementById("doneError").textContent = "";
 
-  `;
-})
-.catch(error => {
-  console.error(error);
-  alert("データの読み込みに失敗しました。Apps ScriptのURLやファイル名を確認してください。");
-});
+  document.getElementById("doneFormModal").style.display = "flex";
+
+  return new Promise(resolve => {
+    doneFormResolver = resolve;
+  });
+}
+
+function submitDoneForm(){
+  const errorBox = document.getElementById("doneError");
+  errorBox.textContent = "";
+
+  const pass = document.getElementById("donePass").value;
+
+  if(!pass){
+    errorBox.textContent = "※合言葉を入力してください";
+    return;
+  }
+
+  const year = document.getElementById("doneYear").value;
+  const month = document.getElementById("doneMonth").value;
+  const day = document.getElementById("doneDay").value;
+
+  const date =
+    year && month && day
+    ? `${year}/${month}/${day}`
+    : "";
+
+  const data = {
+    type:"配布済",
+    date:date,
+    count:document.getElementById("doneCount").value,
+    person:document.getElementById("donePerson").value,
+    note:document.getElementById("doneNote").value,
+    pass:pass
+  };
+
+  document.getElementById("doneFormModal").style.display = "none";
+  doneFormResolver(data);
+}
+
+function cancelDoneForm(){
+  document.getElementById("doneFormModal").style.display = "none";
+  doneFormResolver(null);
+}
+
+function openContactForm(){
+  document.getElementById("contactTitle").value = "";
+  document.getElementById("contactMessage").value = "";
+  document.getElementById("contactName").value = "";
+  document.getElementById("contactEmail").value = "";
+  document.getElementById("contactNote").value = "";
+  document.getElementById("contactPass").value = "";
+  document.getElementById("contactError").textContent = "";
+
+  document.getElementById("contactFormModal").style.display = "flex";
+}
+
+function submitContactForm(){
+
+  const errorBox = document.getElementById("contactError");
+  errorBox.textContent = "";
+
+  const title = document.getElementById("contactTitle").value;
+  const message = document.getElementById("contactMessage").value;
+  const pass = document.getElementById("contactPass").value;
+
+  if(!title){
+    errorBox.textContent = "※タイトルを入力してください";
+    return;
+  }
+
+  if(!message){
+    errorBox.textContent = "※内容を入力してください";
+    return;
+  }
+
+  if(!pass){
+    errorBox.textContent = "※合言葉を入力してください";
+    return;
+  }
+
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      action:"contact",
+      pass:pass,
+      title:title,
+      message:message,
+      name:document.getElementById("contactName").value,
+      email:document.getElementById("contactEmail").value,
+      note:document.getElementById("contactNote").value
+    })
+  })
+  .then(res=>res.json())
+  .then(result=>{
+    if(result.status==="OK"){
+      alert("管理者へ連絡を送信しました");
+      document.getElementById("contactFormModal").style.display = "none";
+    }else{
+      alert("合言葉が違います");
+    }
+  });
+}
+
+function cancelContactForm(){
+  document.getElementById("contactFormModal").style.display = "none";
+}
+
+window.openContactForm = openContactForm;
+window.submitContactForm = submitContactForm;
+window.cancelContactForm = cancelContactForm;
+
 </script>
 
 </body>
