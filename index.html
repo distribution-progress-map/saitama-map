@@ -209,9 +209,13 @@ left:20px;
     transform:translateX(-50%);
     font-size:11px;
     padding:6px 10px;
-    width:auto;
-    max-width:92%;
+
+    width:max-content;
+    max-width:92vw;
+
     white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
 
   .contact-panel{
@@ -254,6 +258,13 @@ left:20px;
   .id-search-panel button{
     font-size:11px;
     padding:4px 6px;
+  }
+
+  .id-search-count{
+    font-size:10px;
+    color:#666;
+    margin-top:3px;
+    text-align:center;
   }
 
   .admin-history-panel{
@@ -628,6 +639,7 @@ left:20px;
 <div class="panel id-search-panel">
   <input id="idSearchInput" type="text" placeholder="ID検索">
   <button onclick="searchAreaById()">検索</button>
+  <div id="idSearchResultCount" class="id-search-count"></div>
 </div>
 
 
@@ -1274,19 +1286,27 @@ map.fitBounds(window.fullBounds);
 
 function searchAreaById(){
 
-  const id = document.getElementById("idSearchInput").value.trim();
+  const keyword = document.getElementById("idSearchInput").value.trim();
+  const countBox = document.getElementById("idSearchResultCount");
 
-  if(!id){
+  if(!keyword){
     alert("IDを入力してください");
+    countBox.textContent = "";
     return;
   }
 
-  const layer = areaLayersById[id];
+  const matchedIds = Object.keys(areaLayersById).filter(id =>
+    id.includes(keyword)
+  );
 
-  if(!layer){
+  countBox.textContent = matchedIds.length + "件見つかりました";
+
+  if(matchedIds.length === 0){
     alert("該当するIDのエリアが見つかりませんでした");
     return;
   }
+
+  const layer = areaLayersById[matchedIds[0]];
 
   map.fitBounds(layer.getBounds(), {
     padding: [40, 40],
