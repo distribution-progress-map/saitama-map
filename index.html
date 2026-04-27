@@ -347,6 +347,14 @@ left:20px;
 /* ===== スマホ用：入力フォームを画面内スクロールここまで ===== */
 
 
+/* ===== スマホ専用：入力フォーム横幅80%ここから ===== */
+  .modal-box{
+    width:80% !important;
+    max-width:80% !important;
+  }
+/* ===== スマホ専用：入力フォーム横幅80%ここまで ===== */
+
+
 }
 /* ===== スマホ専用レイアウト調整ここまで ===== */
 
@@ -1006,7 +1014,7 @@ layer.bindPopup(
 layer.on("click", function() {
   map.fitBounds(layer.getBounds(), {
     padding: [40, 40],
-    maxZoom: 11
+    maxZoom: getTapZoom()
   });
 });
 
@@ -1303,7 +1311,7 @@ layer.bindPopup(
       layer.on("click", function() {
         map.fitBounds(layer.getBounds(), {
           padding: [40, 40],
-          maxZoom: 11
+          maxZoom: getTapZoom()
         });
       });
 
@@ -1357,7 +1365,7 @@ function searchAreaById(){
 
   map.fitBounds(layer.getBounds(), {
     padding: [40, 40],
-    maxZoom: 11
+    maxZoom: getTapZoom()
   });
 
   openPopupAbove(layer);
@@ -1604,6 +1612,12 @@ function submitContactForm(){
 function cancelContactForm(){
   document.getElementById("contactFormModal").style.display = "none";
 }
+
+
+function getTapZoom(){
+  return window.matchMedia("(max-width:600px)").matches ? 13 : 11;
+}
+
 
 window.openContactForm = openContactForm;
 window.submitContactForm = submitContactForm;
