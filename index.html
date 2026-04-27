@@ -1618,36 +1618,57 @@ document.getElementById("adminHistoryBox").addEventListener("click", function(){
 // ===== スマホ：修正履歴タップで開閉ここまで =====
 
 
-// ===== スマホ：二本指操作で作図点を追加しないここから =====
-let multiTouchDrawing = false;
+// ===== スマホ：二本指操作中は作図を一時停止ここから =====
+let activeDrawHandler = null;
+let restartDrawAfterTouch = false;
 
-const mapContainer = map.getContainer();
-
-mapContainer.addEventListener("touchstart", function(e){
-  if(e.touches && e.touches.length >= 2){
-    multiTouchDrawing = true;
+map.on("draw:drawstart", function(e){
+  if(e.layerType === "polygon"){
+    activeDrawHandler = drawControl._toolbars.draw._modes.polygon.handler;
   }
+});
+
+map.on("draw:drawstop", function(){
+  activeDrawHandler = null;
+  restartDrawAfterTouch = false;
+});
+
+map.getContainer().addEventListener("touchstart", function(e){
+
+  if(e.touches && e.touches.length >= 2 && activeDrawHandler){
+
+    restartDrawAfterTouch = true;
+
+    try{
+      activeDrawHandler.disable();
+    }catch(err){
+      console.log(err);
+    }
+
+  }
+
 }, {passive:true});
 
-mapContainer.addEventListener("click", function(e){
-  if(multiTouchDrawing){
-    e.stopPropagation();
-    e.preventDefault();
+map.getContainer().addEventListener("touchend", function(e){
+
+  if(restartDrawAfterTouch && (!e.touches || e.touches.length === 0)){
 
     setTimeout(function(){
-      multiTouchDrawing = false;
-    }, 300);
-  }
-}, true);
 
-mapContainer.addEventListener("touchend", function(){
-  if(multiTouchDrawing){
-    setTimeout(function(){
-      multiTouchDrawing = false;
-    }, 300);
+      try{
+        activeDrawHandler.enable();
+      }catch(err){
+        console.log(err);
+      }
+
+      restartDrawAfterTouch = false;
+
+    }, 500);
+
   }
+
 }, {passive:true});
-// ===== スマホ：二本指操作で作図点を追加しないここまで =====
+// ===== スマホ：二本指操作中は作図を一時停止ここまで =====
 
 
 </script>
