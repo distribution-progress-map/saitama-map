@@ -1640,47 +1640,44 @@ document.getElementById("adminHistoryBox").addEventListener("click", function(){
 
 
 
-// ===== スマホ：二本指操作中は頂点を追加しない（完全版）ここから =====
+// ===== スマホ：二本指中はクリックを無効化（確実版）ここから =====
 
-let multiTouchDetected = false;
+let ignoreNextClick = false;
 
+// 二本指検出
 map.getContainer().addEventListener("touchstart", function(e){
+
   if(e.touches.length >= 2){
-    multiTouchDetected = true;
+    ignoreNextClick = true;
   }
+
 }, {passive:true});
 
+
+// 指が全部離れたら少し後に解除
 map.getContainer().addEventListener("touchend", function(){
+
   setTimeout(function(){
-    multiTouchDetected = false;
-  }, 200);
+    ignoreNextClick = false;
+  }, 300);
+
 }, {passive:true});
 
-map.on("draw:drawvertex", function(e){
 
-  if(multiTouchDetected){
+// clickイベントそのものを止める
+map.on("click", function(e){
 
-    const layer = e.layers;
+  if(ignoreNextClick){
 
-    if(layer && layer.getLayers){
+    e.originalEvent.stopPropagation();
 
-      const vertices = layer.getLayers();
-
-      if(vertices.length > 0){
-
-        const last = vertices[vertices.length - 1];
-
-        layer.removeLayer(last);
-
-      }
-
-    }
+    return;
 
   }
 
 });
 
-// ===== スマホ：二本指操作中は頂点を追加しない（完全版）ここまで =====
+// ===== スマホ：二本指中はクリックを無効化ここまで =====
 
 
 </script>
