@@ -359,6 +359,54 @@ left:20px;
 /* ===== スマホ専用レイアウト調整ここまで ===== */
 
 
+/* ===== スマホ専用：中央ポイント作図UIここから ===== */
+.mobile-draw-panel,
+.map-center-cross{
+  display:none;
+}
+
+@media (max-width:600px){
+
+  .leaflet-draw{
+    display:none;
+  }
+
+  .mobile-draw-panel{
+    display:flex;
+    position:absolute;
+    left:6px;
+    top:60px;
+    z-index:2000;
+    flex-direction:column;
+    gap:4px;
+    background:white;
+    padding:6px;
+    border-radius:8px;
+    box-shadow:0 0 6px rgba(0,0,0,.3);
+  }
+
+  .mobile-draw-panel button{
+    font-size:12px !important;
+    padding:5px 7px;
+  }
+
+  .map-center-cross{
+    display:block;
+    position:absolute;
+    left:50%;
+    top:50%;
+    transform:translate(-50%,-50%);
+    z-index:1500;
+    font-size:28px;
+    font-weight:bold;
+    color:#ff3333;
+    pointer-events:none;
+    text-shadow:0 0 3px white;
+  }
+
+}
+/* ===== スマホ専用：中央ポイント作図UIここまで ===== */
+
 
 
 /* ===== 描画中ボタン日本語表示ここから ===== */
@@ -449,6 +497,21 @@ left:20px;
 <body>
 
 <div id="map"></div>
+
+
+<!-- ===== スマホ専用：中央ポイント作図ボタンここから ===== -->
+<div class="mobile-draw-panel" id="mobileDrawPanel">
+  <button onclick="startMobileDraw()">作図開始</button>
+  <button onclick="addMobilePoint()">ここに点を追加</button>
+  <button onclick="undoMobilePoint()">1つ戻る</button>
+  <button onclick="finishMobileDraw()">囲み終わり</button>
+  <button onclick="cancelMobileDraw()">キャンセル</button>
+</div>
+
+<div class="map-center-cross" id="mapCenterCross">＋</div>
+<!-- ===== スマホ専用：中央ポイント作図ボタンここまで ===== -->
+
+
 
 <div id="areaFormModal" class="modal-bg" style="display:none;">
   <div class="modal-box">
@@ -1319,6 +1382,219 @@ layer.bindPopup(
   });
 
 });
+
+
+
+// ===== スマホ専用：中央ポイント作図ここから =====
+
+let mobileDrawing = false;
+let mobilePoints = [];
+let mobilePreviewLayer = null;
+
+function isMobile(){
+  return window.matchMedia("(max-width:600px)").matches;
+}
+
+function startMobileDraw(){
+
+  if(!isMobile()) return;
+
+  mobileDrawing = true;
+  mobilePoints = [];
+
+  if(mobilePreviewLayer){
+    map.removeLayer(mobilePreviewLayer);
+    mobilePreviewLayer = null;
+  }
+
+  alert("地図の中心に合わせて「ここに点を追加」を押してください。3点以上で囲めます。");
+
+}
+
+function addMobilePoint(){
+
+  if(!isMobile()) return;
+
+  if(!mobileDrawing){
+    alert("先に「作図開始」を押してください");
+    return;
+  }
+
+  const center = map.getCenter();
+  mobilePoints.push([center.lat, center.lng]);
+
+  updateMobilePreview();
+
+}
+
+function undoMobilePoint(){
+
+  if(!isMobile()) return;
+
+  if(mobilePoints.length === 0) return;
+
+  mobilePoints.pop();
+  updateMobilePreview();
+
+}
+
+function updateMobilePreview(){
+
+  if(mobilePreviewLayer){
+    map.removeLayer(mobilePreviewLayer);
+    mobilePreviewLayer = null;
+  }
+
+  if(mobilePoints.length === 1){
+    mobilePreviewLayer = L.circleMarker(mobilePoints[0], {
+      radius:5,
+      color:"#ff6600",
+      fillColor:"#ff6600",
+      fillOpacity:0.8
+    }).addTo(map);
+    return;
+  }
+
+  if(mobilePoints.length >= 2){
+    mobilePreviewLayer = L.polyline(mobilePoints, {
+      color:"#ff6600",
+      weight:3
+    }).addTo(map);
+  }
+
+}
+
+async function finishMobileDraw(){
+
+  if(!isMobile()) return;
+
+  if(!mobileDrawing){
+    alert("先に「作図開始」を押してください");
+    return;
+  }
+
+  if(mobilePoints.length < 3){
+    alert("範囲を作るには3点以上必要です");
+    return;
+  }
+
+  const geo = {
+    type:"Feature",
+    properties:{},
+    geometry:{
+      type:"Polygon",
+      coordinates:[
+        mobilePoints.map(p => [p[1], p[0]])
+      ]
+    }
+  };
+
+  const layer = L.geoJSON(geo).getLayers()[0];
+
+  const formData = await openAreaForm();
+
+  if(!formData) return;
+
+  fetch(SCRIPT_URL,{
+    method:"POST",
+    body:JSON.stringify({
+      pass:formData.pass,
+      type:formData.type,
+      date:formData.date,
+      count:formData.count,
+      person:formData.person,
+      note:formData.note,
+      geometry:geo
+    })
+  })
+  .then(res=>res.json())
+  .then(result=>{
+
+    if(result.status==="OK"){
+
+      layer.setStyle({
+        color:getColor(formData.type),
+        fillColor:getColor(formData.type),
+        fillOpacity:formData.type==="配布済" ? 0.5 : 0.35
+      });
+
+      drawnItems.addLayer(layer);
+
+      const newRow = {
+        "ID": result.id,
+        "種類": formData.type,
+        "実施日": formData.date,
+        "枚数": formData.count,
+        "担当者": formData.person,
+        "備考": formData.note
+      };
+
+      const isPlanned = formData.type === "配布予定";
+
+      if(isPlanned){
+        plannedItemsById[newRow["ID"]] = {
+          geo: geo,
+          row: newRow
+        };
+      }
+
+      areaItemsById[newRow["ID"]] = {
+        geo: geo,
+        row: newRow
+      };
+
+      areaLayersById[newRow["ID"]] = layer;
+
+      layer.bindPopup(
+        makePopupHtml(newRow, isPlanned)
+      );
+
+      layer.on("click", function() {
+        map.fitBounds(layer.getBounds(), {
+          padding: [40, 40],
+          maxZoom: 11
+        });
+      });
+
+      if(mobilePreviewLayer){
+        map.removeLayer(mobilePreviewLayer);
+        mobilePreviewLayer = null;
+      }
+
+      mobileDrawing = false;
+      mobilePoints = [];
+
+      openPopupAbove(layer);
+
+    }else{
+      alert("合言葉が違います");
+    }
+
+  });
+
+}
+
+function cancelMobileDraw(){
+
+  if(!isMobile()) return;
+
+  mobileDrawing = false;
+  mobilePoints = [];
+
+  if(mobilePreviewLayer){
+    map.removeLayer(mobilePreviewLayer);
+    mobilePreviewLayer = null;
+  }
+
+}
+
+window.startMobileDraw = startMobileDraw;
+window.addMobilePoint = addMobilePoint;
+window.undoMobilePoint = undoMobilePoint;
+window.finishMobileDraw = finishMobileDraw;
+window.cancelMobileDraw = cancelMobileDraw;
+
+// ===== スマホ専用：中央ポイント作図ここまで =====
 
 
 
