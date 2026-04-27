@@ -153,17 +153,98 @@ html,body{
 }
 
 .popup-admin-btn{
-  background:#eeeeee;
-  border:1px solid #cccccc;
-  color:#444444;
+  background:#eff6ff;
+  border:1px solid #93c5fd;
+  color:#1d4ed8;
   font-size:12px;
-  padding:4px 8px;
-  border-radius:4px;
+  font-weight:700;
+  padding:6px 10px;
+  border-radius:8px;
   cursor:pointer;
+  box-shadow:none;
+  transition:background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
+}
+
+.leaflet-popup-content{
+  font-size:13px;
+  line-height:1.6;
+}
+
+.popup-main-info{
+  font-size:14px;
+  line-height:1.7;
+  color:#222;
+}
+
+.popup-main-info strong{
+  color:#111;
+}
+
+.popup-sub-divider{
+  margin:12px 0 10px;
+  border:none;
+  border-top:1px dashed #cbd5e1;
+}
+
+.popup-admin-box{
+  margin-top:2px;
+  padding:10px 12px;
+  background:#f8fbff;
+  border:1px solid #dbeafe;
+  border-radius:10px;
+}
+
+.popup-admin-label{
+  display:block;
+  margin-bottom:4px;
+  font-size:11px;
+  font-weight:700;
+  color:#64748b;
+  letter-spacing:0.03em;
+}
+
+.popup-admin-id{
+  display:block;
+  margin-bottom:8px;
+  font-size:12px;
+  color:#334155;
+  line-height:1.5;
+  word-break:break-all;
+}
+
+.popup-admin-btn{
+  background:#eff6ff;
+  border:1px solid #93c5fd;
+  color:#1d4ed8;
+  font-size:12px;
+  font-weight:700;
+  padding:6px 10px;
+  border-radius:8px;
+  cursor:pointer;
+  box-shadow:none;
+  transition:background .15s ease, border-color .15s ease, color .15s ease, transform .15s ease;
 }
 
 .popup-admin-btn:hover{
-  background:#e2e2e2;
+  background:#dbeafe;
+  border-color:#60a5fa;
+  color:#1e40af;
+  transform:translateY(-1px);
+}
+
+.popup-admin-btn:active{
+  transform:translateY(0);
+}
+
+.popup-admin-btn:hover{
+  background:#dbeafe;
+  border-color:#60a5fa;
+  color:#1e40af;
+  transform:translateY(-1px);
+}
+
+.popup-admin-btn:active{
+  transform:translateY(0);
 }
 
 .reset-panel{
@@ -206,9 +287,9 @@ html,body{
 }
 
 .leaflet-top.leaflet-left{
-  top:auto;
-  bottom:70px;
-  left:10px;
+  top:72px;
+  bottom:auto;
+  left:18px;
 }
 
 .mobile-draw-panel,
@@ -219,7 +300,10 @@ html,body{
 
 .leaflet-draw-draw-polygon{
   width:auto !important;
+  height:auto !important;
   background:none !important;
+  border:none !important;
+  box-shadow:none !important;
 }
 
 .leaflet-draw-draw-polygon span{
@@ -228,12 +312,51 @@ html,body{
 
 .leaflet-draw-draw-polygon::after{
   content:"エリアを作図";
-  font-size:14px;
-  padding:4px 8px;
-  background:white;
-  border-radius:6px;
-  border:1px solid #ccc;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  min-width:132px;
+  height:44px;
+  padding:0 18px;
+  background:linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  color:#fff;
+  font-size:15px;
+  font-weight:700;
+  letter-spacing:0.03em;
+  border-radius:999px;
+  border:none;
+  box-shadow:0 10px 24px rgba(37,99,235,0.32);
 }
+
+.leaflet-draw-draw-polygon:hover::after{
+  background:linear-gradient(180deg, #4f8df7 0%, #2f6df0 100%);
+  box-shadow:0 14px 28px rgba(37,99,235,0.38);
+  transform:translateY(-1px);
+}
+
+.leaflet-draw-draw-polygon:active::after{
+  transform:translateY(0);
+  box-shadow:0 8px 18px rgba(37,99,235,0.28);
+}
+
+.leaflet-draw-toolbar a{
+  width:auto !important;
+  height:auto !important;
+  background-image:none !important;
+  text-indent:0 !important;
+}
+
+.leaflet-bar{
+  box-shadow:none;
+  border:none;
+  background:transparent;
+}
+
+.leaflet-bar a{
+  border:none;
+  background:transparent;
+}
+
 
 /* 描画中ボタン日本語表示 */
 .leaflet-draw-actions a[title="Finish drawing"] {
@@ -268,6 +391,41 @@ html,body{
   width:100%;
   margin-bottom:6px;
 }
+
+.leaflet-control-zoom{
+  border:none !important;
+  box-shadow:0 0 6px rgba(0,0,0,.18) !important;
+}
+
+.leaflet-control-zoom a{
+  width:34px;
+  height:34px;
+  line-height:34px;
+  background:#ffffff !important;
+  color:#333333 !important;
+  border:1px solid #d8d8d8 !important;
+  box-shadow:none !important;
+  font-weight:bold;
+  font-size:20px;
+}
+
+.leaflet-control-zoom a:first-child{
+  border-top-left-radius:8px;
+  border-top-right-radius:8px;
+}
+
+.leaflet-control-zoom a:last-child{
+  border-bottom-left-radius:8px;
+  border-bottom-right-radius:8px;
+  border-top:none !important;
+}
+
+.leaflet-control-zoom a:hover{
+  background:#f5f5f5 !important;
+  color:#111111 !important;
+}
+
+
 
 /* スマホ */
 @media (max-width:600px) and (pointer:coarse){
@@ -374,17 +532,30 @@ html,body{
     width:64vw !important;
     max-width:64vw !important;
     font-size:12px;
-    line-height:1.4;
+    line-height:1.5;
   }
 
   .leaflet-popup-content button{
     font-size:12px !important;
-    padding:4px 7px !important;
+    padding:6px 10px !important;
+    border-radius:8px;
   }
 
   .popup-main-info{
-    font-size:110%;
-    line-height:1.45;
+    font-size:13px;
+    line-height:1.6;
+  }
+
+  .popup-admin-box{
+    padding:9px 10px;
+  }
+
+  .popup-admin-label{
+    font-size:10px;
+  }
+
+  .popup-admin-id{
+    font-size:11px;
   }
 
   input,
@@ -411,13 +582,13 @@ html,body{
   .mobile-draw-start{
     display:block;
     position:absolute;
-    left:6px;
-    top:60px;
+    left:12px;
+    top:64px;
     z-index:2000;
-    background:white;
-    padding:6px;
-    border-radius:8px;
-    box-shadow:0 0 6px rgba(0,0,0,.3);
+    background:transparent;
+    padding:0;
+    border-radius:0;
+    box-shadow:none;
   }
 
   .mobile-draw-panel{
@@ -432,6 +603,20 @@ html,body{
     padding:6px;
     border-radius:8px;
     box-shadow:0 0 6px rgba(0,0,0,.3);
+  }
+
+  .mobile-draw-start button{
+    min-width:138px;
+    height:46px;
+    padding:0 18px;
+    border:none;
+    border-radius:999px;
+    background:linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+    color:#fff;
+    font-size:15px !important;
+    font-weight:700;
+    letter-spacing:0.03em;
+    box-shadow:0 10px 22px rgba(37,99,235,0.30);
   }
 
   .mobile-draw-panel button{
@@ -458,9 +643,9 @@ html,body{
   }
 
   .leaflet-top.leaflet-left{
-    top:auto;
-    bottom:75px;
-    left:6px;
+    top:8px;
+    bottom:auto;
+    left:8px;
   }
 
   .history-toggle-hint{
@@ -1038,17 +1223,19 @@ function makePopupHtml(row, isPlanned){
     html += `<br><br><button onclick="convertPlannedToDone('${row["ID"]}')">配布済にする</button>`;
   }
 
-  html += `<br><br><button class="popup-admin-btn" onclick="openRequestMenu('${row["ID"]}')">管理者へ修正依頼</button>`;
+    html += `<br><br><button class="popup-admin-btn" onclick="openRequestMenu('${row["ID"]}')">管理者へ修正依頼</button>`;
 
-  html += `
-    <hr style="margin:10px 0; border:none; border-top:1px dashed #ccc;">
-    <div style="font-size:12px; color:#666;">
-      管理者用ID：${row["ID"]}<br>
-      <button class="popup-admin-btn" onclick="copyAreaId('${row["ID"]}')" style="margin-top:4px; font-size:11px;">
-        IDをコピー
-      </button>
-    </div>
-  `;
+    html += `
+      <hr class="popup-sub-divider">
+      <div class="popup-admin-box">
+        <span class="popup-admin-label">管理者用ID</span>
+        <span class="popup-admin-id">${row["ID"]}</span>
+        <button class="popup-admin-btn" onclick="copyAreaId('${row["ID"]}')">
+          IDをコピー
+        </button>
+      </div>
+    `;
+
   return html;
 }
 
