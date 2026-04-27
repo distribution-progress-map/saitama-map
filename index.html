@@ -302,9 +302,26 @@ left:20px;
   }
   /* ===== iPhone入力欄ズーム防止ここまで ===== */
 
+  
+
+  /* ===== スマホ用：入力フォームを画面内スクロールここから ===== */
+  .modal-bg{
+    align-items:flex-start;
+    overflow-y:auto;
+    padding:20px 0 90px;
+  }
+
+  .modal-box{
+    max-height:calc(100vh - 120px);
+    overflow-y:auto;
+    -webkit-overflow-scrolling:touch;
+  }
+/* ===== スマホ用：入力フォームを画面内スクロールここまで ===== */
+
 
 }
 /* ===== スマホ専用レイアウト調整ここまで ===== */
+
 
 
 
