@@ -266,7 +266,7 @@ left:20px;
 
   .admin-history-panel{
     top:auto !important;
-    bottom:65px !important;
+    bottom:58px !important;
     right:6px;
     width:170px;
     height:58px !important;
@@ -1639,57 +1639,55 @@ document.getElementById("adminHistoryBox").addEventListener("click", function(){
 // ===== スマホ：修正履歴タップで開閉ここまで =====
 
 
-// ===== スマホ：二本指操作中は作図を一時停止ここから =====
-let activeDrawHandler = null;
-let restartDrawAfterTouch = false;
+// ===== スマホ：二本指操作では作図ポイントを追加しないここから =====
+let isTwoFingerTouch = false;
 
-map.on("draw:drawstart", function(e){
-  if(e.layerType === "polygon"){
-    activeDrawHandler = drawControl._toolbars.draw._modes.polygon.handler;
-  }
-});
+const mapEl = map.getContainer();
 
-map.on("draw:drawstop", function(){
-  activeDrawHandler = null;
-  restartDrawAfterTouch = false;
-});
+mapEl.addEventListener("touchstart", function(e){
 
-map.getContainer().addEventListener("touchstart", function(e){
-
-  if(e.touches && e.touches.length >= 2 && activeDrawHandler){
-
-    restartDrawAfterTouch = true;
-
-    try{
-      activeDrawHandler.disable();
-    }catch(err){
-      console.log(err);
-    }
-
+  if(e.touches && e.touches.length >= 2){
+    isTwoFingerTouch = true;
   }
 
 }, {passive:true});
 
-map.getContainer().addEventListener("touchend", function(e){
 
-  if(restartDrawAfterTouch && (!e.touches || e.touches.length === 0)){
+mapEl.addEventListener("touchmove", function(e){
 
-    setTimeout(function(){
-
-      try{
-        activeDrawHandler.enable();
-      }catch(err){
-        console.log(err);
-      }
-
-      restartDrawAfterTouch = false;
-
-    }, 500);
-
+  if(e.touches && e.touches.length >= 2){
+    isTwoFingerTouch = true;
   }
 
 }, {passive:true});
-// ===== スマホ：二本指操作中は作図を一時停止ここまで =====
+
+
+mapEl.addEventListener("touchend", function(){
+
+  setTimeout(function(){
+    isTwoFingerTouch = false;
+  }, 350);
+
+}, {passive:true});
+
+
+map.on("draw:drawvertex", function(){
+
+  if(isTwoFingerTouch && drawnItems){
+    // 念のため何もしない
+  }
+
+});
+
+
+mapEl.addEventListener("touchend", function(e){
+
+  if(isTwoFingerTouch){
+    e.stopImmediatePropagation();
+  }
+
+}, true);
+// ===== スマホ：二本指操作では作図ポイントを追加しないここまで =====
 
 
 </script>
