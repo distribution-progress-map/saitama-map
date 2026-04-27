@@ -269,10 +269,24 @@ left:20px;
     bottom:58px !important;
     right:6px;
     width:170px;
-    height:50px;
+    height:58px !important;
     max-height:none;
     font-size:11px;
     padding:6px;
+    transition:height .2s;
+  }
+
+  .admin-history-panel.expanded{
+    height:160px !important;
+  }
+
+  .admin-history-panel #adminHistoryContent{
+    height:24px !important;
+  }
+
+  .admin-history-panel.expanded #adminHistoryContent{
+    height:125px !important;
+    overflow-y:auto;
   }
 
   #adminHistoryContent{
@@ -1594,6 +1608,15 @@ function cancelContactForm(){
 window.openContactForm = openContactForm;
 window.submitContactForm = submitContactForm;
 window.cancelContactForm = cancelContactForm;
+
+// ===== スマホ：修正履歴タップで開閉ここから =====
+document.getElementById("adminHistoryBox").addEventListener("click", function(){
+  if(window.matchMedia("(max-width:600px)").matches){
+    this.classList.toggle("expanded");
+  }
+});
+// ===== スマホ：修正履歴タップで開閉ここまで =====
+
 
 </script>
 
