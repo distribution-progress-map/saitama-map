@@ -803,13 +803,7 @@ onEachFeature:function(feature,layer){
 
 layer.on("click",function(){
 
-map.fitBounds(layer.getBounds(),{
-
-paddingTopLeft:[20,20],
-paddingBottomRight:[320,20]
-
-});
-
+map.fitBounds(layer.getBounds(), getCityFitOptions());
 });
 
 }
@@ -1616,6 +1610,19 @@ function cancelContactForm(){
 
 function getTapZoom(){
   return window.matchMedia("(max-width:600px)").matches ? 13 : 11;
+}
+
+function getCityFitOptions(){
+  if(window.matchMedia("(max-width:600px)").matches){
+    return {
+      padding:[30,30]
+    };
+  }
+
+  return {
+    paddingTopLeft:[20,20],
+    paddingBottomRight:[320,20]
+  };
 }
 
 
