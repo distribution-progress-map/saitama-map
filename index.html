@@ -6,52 +6,46 @@
 
 <title>配布エリア共有マップ</title>
 
-<link rel="stylesheet"
-href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
 
 <style>
-
 html,body{
-height:100%;
-margin:0;
+  height:100%;
+  margin:0;
 }
 
 #map{
-height:100%;
+  height:100%;
 }
 
 .panel{
-position:absolute;
-background:white;
-padding:10px;
-z-index:1000;
-border-radius:8px;
-box-shadow:0 0 6px rgba(0,0,0,.3);
+  position:absolute;
+  background:white;
+  padding:10px;
+  z-index:1000;
+  border-radius:8px;
+  box-shadow:0 0 6px rgba(0,0,0,.3);
 }
 
 .title{
-top:15px;
-left:50%;
-transform:translateX(-50%);
-font-size:20px;
-font-weight:bold;
-}
-
-
-.error-text{
-  color:red;
-  font-size:14px;
-  margin-bottom:8px;
+  top:15px;
+  left:50%;
+  transform:translateX(-50%);
+  font-size:20px;
   font-weight:bold;
 }
 
+.error-text{
+  color:red;
+  font-size:13px;
+  margin-top:4px;
+  margin-bottom:8px;
+  font-weight:bold;
+}
 
 .modal-bg{
   position:fixed;
@@ -124,7 +118,6 @@ font-weight:bold;
   margin-bottom:6px;
 }
 
-
 .id-search-panel{
   top:350px;
   right:15px;
@@ -143,8 +136,6 @@ font-weight:bold;
   font-size:12px;
 }
 
-
-/* ===== 管理者連絡ボタンここから ===== */
 .contact-panel{
   top:45px;
   right:15px;
@@ -160,11 +151,6 @@ font-weight:bold;
   margin:0 auto;
   display:block;
 }
-/* ===== 管理者連絡ボタンここまで ===== */
-
-
-
-/* ===== ポップアップ管理者ボタンここから ===== */
 
 .popup-admin-btn{
   background:#eeeeee;
@@ -180,21 +166,9 @@ font-weight:bold;
   background:#e2e2e2;
 }
 
-/* ===== ポップアップ管理者ボタンここまで ===== */
-
-
-
-.error-text{
-  color:red;
-  font-size:13px;
-  margin-top:4px;
-}
-
-
-
 .reset-panel{
-bottom:20px;
-left:20px;
+  bottom:20px;
+  left:20px;
 }
 
 .history-toggle-hint{
@@ -203,9 +177,100 @@ left:20px;
   margin-left:6px;
 }
 
-/* ===== スマホ専用レイアウト調整ここから ===== */
-@media (max-width:600px) and (pointer:coarse){
+.admin-history-panel{
+  top:100px;
+  right:15px;
+  width:210px;
+  height:220px;
+  overflow:hidden;
+  font-size:13px;
+  line-height:1.5;
+}
 
+.history-title{
+  margin-bottom:4px;
+}
+
+#adminHistoryContent{
+  height:180px;
+  overflow-y:auto;
+}
+
+.scroll-hint{
+  height:18px;
+  line-height:18px;
+  text-align:center;
+  font-size:11px;
+  color:#888;
+  border-top:1px solid #eee;
+}
+
+.leaflet-top.leaflet-left{
+  top:auto;
+  bottom:70px;
+  left:10px;
+}
+
+.mobile-draw-panel,
+.map-center-cross,
+.mobile-draw-start{
+  display:none;
+}
+
+.leaflet-draw-draw-polygon{
+  width:auto !important;
+  background:none !important;
+}
+
+.leaflet-draw-draw-polygon span{
+  display:none;
+}
+
+.leaflet-draw-draw-polygon::after{
+  content:"エリアを作図";
+  font-size:14px;
+  padding:4px 8px;
+  background:white;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
+
+/* 描画中ボタン日本語表示 */
+.leaflet-draw-actions a[title="Finish drawing"] {
+  font-size: 0;
+}
+.leaflet-draw-actions a[title="Finish drawing"]::after {
+  content: "囲み終わり";
+  font-size: 13px;
+}
+
+.leaflet-draw-actions a[title="Cancel drawing"] {
+  font-size: 0;
+}
+.leaflet-draw-actions a[title="Cancel drawing"]::after {
+  content: "キャンセル";
+  font-size: 13px;
+}
+
+.leaflet-draw-actions a[title="Delete last point"] {
+  font-size: 0;
+}
+.leaflet-draw-actions a[title="Delete last point"]::after {
+  content: "1つ戻る";
+  font-size: 13px;
+}
+
+#requestFormModal .date-row{
+  display:block;
+}
+
+#requestFormModal .date-row select{
+  width:100%;
+  margin-bottom:6px;
+}
+
+/* スマホ */
+@media (max-width:600px) and (pointer:coarse){
   .title{
     top:8px;
     left:50%;
@@ -213,10 +278,8 @@ left:20px;
     transform:translateX(-50%);
     font-size:11px;
     padding:6px 10px;
-
     width:max-content;
     max-width:92vw;
-
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
@@ -317,26 +380,20 @@ left:20px;
   .leaflet-popup-content button{
     font-size:12px !important;
     padding:4px 7px !important;
-  } 
+  }
 
   .popup-main-info{
     font-size:110%;
     line-height:1.45;
   }
 
-
-  /* ===== iPhone入力欄ズーム防止ここから ===== */
   input,
   select,
   textarea,
   button{
     font-size:16px !important;
   }
-  /* ===== iPhone入力欄ズーム防止ここまで ===== */
 
-
-
-  /* ===== スマホ用：入力フォームを画面内スクロールここから ===== */
   .modal-bg{
     align-items:flex-start;
     overflow-y:auto;
@@ -347,37 +404,9 @@ left:20px;
     max-height:calc(100vh - 120px);
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
-  }
-/* ===== スマホ用：入力フォームを画面内スクロールここまで ===== */
-
-
-/* ===== スマホ専用：入力フォーム横幅80%ここから ===== */
-  .modal-box{
     width:80% !important;
     max-width:80% !important;
   }
-/* ===== スマホ専用：入力フォーム横幅80%ここまで ===== */
-
-  .history-toggle-hint{
-    font-size:10px;
-  }
-
-
-}
-/* ===== スマホ専用レイアウト調整ここまで ===== */
-
-
-/* ===== スマホ専用：中央ポイント作図UIここから ===== */
-.mobile-draw-panel,
-.map-center-cross{
-  display:none;
-}
-
-.mobile-draw-start{
-  display:none;
-}
-
-@media (max-width:600px) and (pointer:coarse){
 
   .mobile-draw-start{
     display:block;
@@ -411,7 +440,7 @@ left:20px;
   }
 
   .map-center-cross{
-    display:block;
+    display:none;
     position:absolute;
     left:50%;
     top:50%;
@@ -424,110 +453,237 @@ left:20px;
     text-shadow:0 0 3px white;
   }
 
-}
-/* ===== スマホ専用：中央ポイント作図UIここまで ===== */
+  .leaflet-draw{
+    display:none !important;
+  }
 
+  .leaflet-top.leaflet-left{
+    top:auto;
+    bottom:75px;
+    left:6px;
+  }
 
-
-/* ===== 描画中ボタン日本語表示ここから ===== */
-
-/* Finish を隠して日本語を表示 */
-.leaflet-draw-actions a[title="Finish drawing"] {
-  font-size: 0;
-}
-
-.leaflet-draw-actions a[title="Finish drawing"]::after {
-  content: "囲み終わり";
-  font-size: 13px;
+  .history-toggle-hint{
+    font-size:10px;
+  }
 }
 
-/* Cancel を隠して日本語を表示 */
-.leaflet-draw-actions a[title="Cancel drawing"] {
-  font-size: 0;
+
+/* ===== 見た目の微調整ここから ===== */
+
+body{
+  font-family:"Hiragino Sans","Yu Gothic","Meiryo",sans-serif;
+  color:#222;
 }
 
-.leaflet-draw-actions a[title="Cancel drawing"]::after {
-  content: "キャンセル";
-  font-size: 13px;
+.panel{
+  background:rgba(255,255,255,0.96);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12);
+  backdrop-filter:blur(4px);
+  -webkit-backdrop-filter:blur(4px);
 }
 
-/* Delete last point は環境によって title が違うことがあるので両対応 */
-.leaflet-draw-actions a[title="Delete last point"] {
-  font-size: 0;
+.title{
+  background:rgba(255,255,255,0.96);
+  padding:10px 16px;
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:999px;
+  box-shadow:0 6px 18px rgba(0,0,0,0.10);
+  letter-spacing:0.02em;
 }
 
-.leaflet-draw-actions a[title="Delete last point"]::after {
-  content: "1つ戻る";
-  font-size: 13px;
+.modal-bg{
+  background:rgba(0,0,0,0.52);
 }
 
-/* ===== 描画中ボタン日本語表示ここまで ===== */
-
-
-.leaflet-draw-draw-polygon{
-  width:auto !important;
-  background:none !important;
+.modal-box{
+  background:#ffffff;
+  border-radius:16px;
+  box-shadow:0 18px 48px rgba(0,0,0,0.22);
+  padding:20px;
 }
 
-.leaflet-draw-draw-polygon span{
-  display:none;
+.modal-box h3{
+  margin:0 0 14px 0;
+  font-size:20px;
+  line-height:1.4;
+  color:#222;
 }
 
-.leaflet-draw-draw-polygon::after{
-  content:"エリアを作図";
+label{
+  display:block;
+  margin-top:12px;
+  margin-bottom:6px;
   font-size:14px;
-  padding:4px 8px;
-  background:white;
-  border-radius:6px;
-  border:1px solid #ccc;
+  font-weight:700;
+  color:#333;
 }
 
-
-
-/* ===== 修正依頼フォームの日付欄調整ここから ===== */
-#requestFormModal .date-row {
-  display: block;
-}
-
-#requestFormModal .date-row select {
-  width: 100%;
-  margin-bottom: 6px;
-}
-/* ===== 修正依頼フォームの日付欄調整ここまで ===== */
-
-
-
-/* ===== 管理者修正履歴パネルここから ===== */
-
-.admin-history-panel{
-  top:100px;
-  right:15px;
-  width:210px;
-  height:220px;
-  overflow:hidden;
-  font-size:13px;
+input,
+select,
+textarea{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid #cfcfcf;
+  border-radius:10px;
+  background:#fff;
+  font-size:14px;
   line-height:1.5;
+  box-sizing:border-box;
+}
+
+input:focus,
+select:focus,
+textarea:focus{
+  outline:none;
+  border-color:#2f7df6;
+  box-shadow:0 0 0 3px rgba(47,125,246,0.15);
+}
+
+textarea{
+  min-height:88px;
+  resize:vertical;
+}
+
+button{
+  border:none;
+  border-radius:10px;
+  padding:10px 14px;
+  font-size:14px;
+  font-weight:700;
+  line-height:1.4;
+  background:#2f7df6;
+  color:#fff;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(47,125,246,0.22);
+  transition:transform 0.15s ease, box-shadow 0.15s ease, opacity 0.15s ease;
+}
+
+button:hover{
+  transform:translateY(-1px);
+  box-shadow:0 8px 18px rgba(47,125,246,0.24);
+}
+
+button:active{
+  transform:translateY(0);
+  opacity:0.92;
+}
+
+.modal-buttons{
+  display:flex;
+  gap:10px;
+  margin-top:16px;
+}
+
+.modal-buttons button{
+  flex:1;
+}
+
+.modal-buttons button:last-child{
+  background:#e9edf3;
+  color:#333;
+  box-shadow:none;
+}
+
+.error-text{
+  color:#d93025;
+  font-size:13px;
+  margin-top:4px;
+  margin-bottom:8px;
+  font-weight:700;
+}
+
+.id-search-panel{
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.id-search-panel input{
+  min-width:120px;
+}
+
+.id-search-count{
+  font-size:12px;
+  color:#555;
+  margin-top:4px;
+}
+
+#adminHistoryBox{
+  background:rgba(255,255,255,0.96);
+  border:1px solid rgba(0,0,0,0.08);
+  border-radius:12px;
+  box-shadow:0 8px 24px rgba(0,0,0,0.12);
+  overflow:hidden;
 }
 
 .history-title{
-  margin-bottom:4px;
+  background:#f7f9fc;
+  padding:12px 14px;
+  border-bottom:1px solid rgba(0,0,0,0.06);
 }
 
 #adminHistoryContent{
-  height:180px;
-  overflow-y:auto;
+  padding:12px 14px;
+  font-size:13px;
+  line-height:1.7;
 }
 
 .scroll-hint{
-  height:18px;
-  line-height:18px;
-  text-align:center;
-  font-size:11px;
-  color:#888;
-  border-top:1px solid #eee;
+  padding:8px 14px 12px;
+  font-size:12px;
+  color:#666;
 }
 
-/* ===== 管理者修正履歴パネルここまで ===== */
+.mobile-draw-start button,
+.mobile-draw-panel button{
+  width:100%;
+}
+
+@media (max-width:600px){
+  .panel{
+    padding:12px;
+    border-radius:14px;
+  }
+
+  .title{
+    max-width:calc(100% - 24px);
+    font-size:18px;
+    text-align:center;
+  }
+
+  .modal-box{
+    width:92%;
+    max-width:none;
+    padding:18px;
+    border-radius:16px;
+  }
+
+  input,
+  select,
+  textarea,
+  button{
+    font-size:16px;
+  }
+
+  .modal-buttons{
+    flex-direction:column;
+  }
+
+  .id-search-panel{
+    display:block;
+  }
+
+  .id-search-panel input,
+  .id-search-panel button{
+    width:100%;
+    margin-top:8px;
+  }
+}
+
+/* ===== 見た目の微調整ここまで ===== */
 
 
 </style>
@@ -537,8 +693,6 @@ left:20px;
 
 <div id="map"></div>
 
-
-<!-- ===== スマホ専用：中央ポイント作図ボタンここから ===== -->
 <div class="mobile-draw-start" id="mobileDrawStart">
   <button onclick="startMobileDraw()">作図開始</button>
 </div>
@@ -552,56 +706,45 @@ left:20px;
 </div>
 
 <div class="map-center-cross" id="mapCenterCross">＋</div>
-<!-- ===== スマホ専用：中央ポイント作図ボタンここまで ===== -->
-
-
 
 <div id="areaFormModal" class="modal-bg" style="display:none;">
   <div class="modal-box">
     <h3>配布エリア登録</h3>
-
     <div id="typeError" class="error-text"></div>
 
     <label>※種類</label>
-<select id="formType">
-  <option value="">選択する</option>
-  <option value="配布予定">配布予定</option>
-  <option value="配布済">配布済</option>
-</select>
+    <select id="formType">
+      <option value="">選択する</option>
+      <option value="配布予定">配布予定</option>
+      <option value="配布済">配布済</option>
+    </select>
 
+    <label>配布予定日または配布実施日</label>
+    <div class="date-row">
+      <select id="formYear">
+        <option value="">年（未入力も可）</option>
+        <option value="2026">2026</option>
+        <option value="2027">2027</option>
+      </select>
+      <select id="formMonth">
+        <option value="">月（未入力も可）</option>
+      </select>
+      <select id="formDay">
+        <option value="">日（未入力も可）</option>
+      </select>
+    </div>
 
+    <label>枚数</label>
+    <input id="formCount" type="text" placeholder="未入力も可">
 
+    <label>担当者</label>
+    <input id="formPerson" type="text" placeholder="匿名可・未入力も可">
 
-<label>配布予定日または配布実施日</label>
-<div class="date-row">
-  <select id="formYear">
-    <option value="">年（未入力も可）</option>
-    <option value="2026">2026</option>
-    <option value="2027">2027</option>
-  </select>
+    <label>備考</label>
+    <textarea id="formNote" placeholder="未入力も可"></textarea>
 
-  <select id="formMonth">
-    <option value="">月（未入力も可）</option>
-  </select>
-
-  <select id="formDay">
-    <option value="">日（未入力も可）</option>
-  </select>
-</div>
-
-<label>枚数</label>
-<input id="formCount" type="text" placeholder="未入力も可">
-
-<label>担当者</label>
-<input id="formPerson" type="text" placeholder="匿名可・未入力も可">
-
-<label>備考</label>
-<textarea id="formNote" placeholder="未入力も可"></textarea>
-
-<label>※合言葉</label>
-<input id="formPass" type="password" placeholder="合言葉">
-
-
+    <label>※合言葉</label>
+    <input id="formPass" type="password" placeholder="合言葉">
 
     <div class="modal-buttons">
       <button onclick="submitAreaForm()">OK</button>
@@ -610,11 +753,9 @@ left:20px;
   </div>
 </div>
 
-
 <div id="doneFormModal" class="modal-bg" style="display:none;">
   <div class="modal-box">
     <h3>配布済にする</h3>
-
     <div id="doneError" class="error-text"></div>
 
     <label>種類</label>
@@ -627,11 +768,9 @@ left:20px;
         <option value="2026">2026</option>
         <option value="2027">2027</option>
       </select>
-
       <select id="doneMonth">
         <option value="">月（未入力も可）</option>
       </select>
-
       <select id="doneDay">
         <option value="">日（未入力も可）</option>
       </select>
@@ -656,11 +795,9 @@ left:20px;
   </div>
 </div>
 
-
 <div id="requestFormModal" class="modal-bg" style="display:none;">
   <div class="modal-box">
     <h3>修正依頼</h3>
-
     <div id="requestError" class="error-text"></div>
 
     <label>修正したい項目だけ入力</label>
@@ -674,20 +811,18 @@ left:20px;
 
     <label>配布予定日または配布実施日</label>
     <div class="date-row">
-  　　<select id="requestYear">
-    　　<option value="">年（未入力も可）</option>
-    　　<option value="2026">2026</option>
-    　　<option value="2027">2027</option>
-  　　</select>
-
-  　　<select id="requestMonth">
-    　　<option value="">月（未入力も可）</option>
-  　　</select>
-
-  <select id="requestDay">
-    <option value="">日（未入力も可）</option>
-  </select>
-</div>
+      <select id="requestYear">
+        <option value="">年（未入力も可）</option>
+        <option value="2026">2026</option>
+        <option value="2027">2027</option>
+      </select>
+      <select id="requestMonth">
+        <option value="">月（未入力も可）</option>
+      </select>
+      <select id="requestDay">
+        <option value="">日（未入力も可）</option>
+      </select>
+    </div>
 
     <label>枚数</label>
     <input id="requestCount" type="text" placeholder="未入力も可">
@@ -708,45 +843,27 @@ left:20px;
   </div>
 </div>
 
-
 <div id="requestChoiceModal" class="modal-bg" style="display:none;">
   <div class="modal-box">
-
     <h3>管理者へ依頼</h3>
-
     <p>どちらの依頼を送信しますか？</p>
-
     <div class="modal-buttons">
       <button onclick="chooseDeleteRequest()">削除依頼</button>
       <button onclick="chooseModifyRequest()">修正依頼</button>
       <button onclick="cancelRequestChoice()">キャンセル</button>
     </div>
-
   </div>
 </div>
 
+<div class="panel title" id="titleBox">読み込み中...</div>
 
-
-<div class="panel title" id="titleBox">
-読み込み中...
-</div>
-
-
-<!-- ===== 管理者連絡ボタンここから ===== -->
 <div class="panel contact-panel">
-  <button onclick="openContactForm()">
-    管理者へ連絡
-  </button>
+  <button onclick="openContactForm()">管理者へ連絡</button>
 </div>
-<!-- ===== 管理者連絡ボタンここまで ===== -->
-
-
-
 
 <div id="contactFormModal" class="modal-bg" style="display:none;">
   <div class="modal-box">
     <h3>管理者へ連絡</h3>
-
     <div id="contactError" class="error-text"></div>
 
     <p style="font-size:13px;color:#666;">
@@ -779,24 +896,17 @@ left:20px;
 </div>
 
 <div class="panel admin-history-panel" id="adminHistoryBox">
-
-  <div class="history-title" onclick="toggleHistoryPanel()">
+  <div class="history-title">
     <strong>
       管理者修正履歴
       <span class="history-toggle-hint">（タップで開閉）</span>
     </strong>
   </div>
 
-  <div id="adminHistoryContent">
-    読み込み中...
-  </div>
+  <div id="adminHistoryContent">読み込み中...</div>
 
-  <div class="scroll-hint">
-    ▼スクロールできます
-  </div>
-
+  <div class="scroll-hint">▼スクロールできます</div>
 </div>
-
 
 <div class="panel id-search-panel">
   <input id="idSearchInput" type="text" placeholder="ID検索">
@@ -804,50 +914,34 @@ left:20px;
   <div id="idSearchResultCount" class="id-search-count"></div>
 </div>
 
-
 <div class="panel reset-panel">
-<button onclick="resetView()">全体表示に戻る</button>
+  <button onclick="resetView()">全体表示に戻る</button>
 </div>
 
 <script>
+const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysYcR6z1nZ3iaDa8hVvwO50-REyUzzbHf5U2hgdhEoBpTtdK4W99OL_iZzI6WmntYeBg/exec";
 
-const SCRIPT_URL="https://script.google.com/macros/s/AKfycbysYcR6z1nZ3iaDa8hVvwO50-REyUzzbHf5U2hgdhEoBpTtdK4W99OL_iZzI6WmntYeBg/exec";
+const map = L.map("map").setView([35.9, 139.5], 9);
 
-const map=L.map("map").setView([35.9,139.5],9);
+L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution: "©OpenStreetMap"
+}).addTo(map);
 
-L.tileLayer(
-"https://tile.openstreetmap.org/{z}/{x}/{y}.png",
-{attribution:"©OpenStreetMap"}
-).addTo(map);
-
-
-// ===== タッチ端末だけ中央ポイント作図モードに切替 =====
-
-const isTouchDevice =
-  window.matchMedia("(max-width:600px)").matches;
+const isTouchDevice = window.matchMedia("(max-width:600px) and (pointer:coarse)").matches;
 
 if(isTouchDevice){
-
   document.getElementById("mobileDrawStart").style.display = "block";
   document.getElementById("mobileDrawPanel").style.display = "none";
   document.getElementById("mapCenterCross").style.display = "none";
 
   const drawToolbar = document.querySelector(".leaflet-draw");
-
-  if(drawToolbar){
-    drawToolbar.style.display = "none";
-  }
-
+  if(drawToolbar) drawToolbar.style.display = "none";
 }else{
-
   document.getElementById("mobileDrawPanel").style.display = "none";
   document.getElementById("mapCenterCross").style.display = "none";
-
 }
 
-
-
-const drawnItems=new L.FeatureGroup();
+const drawnItems = new L.FeatureGroup();
 map.addLayer(drawnItems);
 
 const plannedItemsById = {};
@@ -855,146 +949,84 @@ const areaItemsById = {};
 const areaLayersById = {};
 let currentRequestId = null;
 
-
-// ===== 描画ツール日本語化ここから =====
-
 L.drawLocal.draw.toolbar.buttons.polygon = "配布エリアを描く";
-
-L.drawLocal.draw.handlers.polygon.tooltip.start =
-"地図をクリックして配布エリアの1点目を決めてください";
-
-L.drawLocal.draw.handlers.polygon.tooltip.cont =
-"続けてクリックして範囲を囲んでください。最初の点をクリックすると範囲が確定します";
-
-L.drawLocal.draw.handlers.polygon.tooltip.end =
-"最初の点をクリックすると範囲が確定します";
-
-/* ←ここが重要追加 */
-
+L.drawLocal.draw.handlers.polygon.tooltip.start = "地図をクリックして配布エリアの1点目を決めてください";
+L.drawLocal.draw.handlers.polygon.tooltip.cont = "続けてクリックして範囲を囲んでください。最初の点をクリックすると範囲が確定します";
+L.drawLocal.draw.handlers.polygon.tooltip.end = "最初の点をクリックすると範囲が確定します";
 L.drawLocal.draw.handlers.polygon.finish = {
   title: "この範囲で登録します",
   text: "この範囲で登録"
 };
-
 L.drawLocal.draw.toolbar.undo = {
   title: "直前の点を削除",
   text: "1つ戻る"
 };
-
 L.drawLocal.draw.toolbar.cancel = {
   title: "描画を中止します",
   text: "キャンセル"
 };
 
-// ===== 描画ツール日本語化ここまで =====
-
-
-
-
-
-
-const drawControl=new L.Control.Draw({
-
-draw:{
-  polygon:true,
-  rectangle:false,
-  circle:false,
-  marker:false,
-  polyline:false,
-  circlemarker:false
-},
-
-edit:{
-featureGroup:drawnItems,
-edit:false,
-remove:false
-}
-
+const drawControl = new L.Control.Draw({
+  draw:{
+    polygon:true,
+    rectangle:false,
+    circle:false,
+    marker:false,
+    polyline:false,
+    circlemarker:false
+  },
+  edit:{
+    featureGroup:drawnItems,
+    edit:false,
+    remove:false
+  }
 });
-
-
 map.addControl(drawControl);
 
-
-
 fetch("saitama.geojson")
+  .then(res => res.json())
+  .then(data => {
+    const boundary = L.geoJSON(data, {
+      style:{
+        color:"#000",
+        weight:2,
+        fill:true,
+        fillColor:"#dddddd",
+        fillOpacity:0.5
+      },
+      onEachFeature:function(feature, layer){
+        layer.on("click", function(){
+          map.fitBounds(layer.getBounds(), getCityFitOptions());
+        });
+      }
+    }).addTo(map);
 
-.then(res=>res.json())
-
-.then(data=>{
-
-const boundary=L.geoJSON(data,{
-
-style:{
-color:"#000",
-weight:2,
-fill:true,
-fillColor:"#dddddd",
-fillOpacity:0.5
-},
-
-onEachFeature:function(feature,layer){
-
-layer.on("click",function(){
-
-map.fitBounds(layer.getBounds(), getCityFitOptions());
-});
-
-}
-
-}).addTo(map);
-
-
-
-map.fitBounds(boundary.getBounds());
-
-window.fullBounds=boundary.getBounds();
-
-});
-
-
+    map.fitBounds(boundary.getBounds());
+    window.fullBounds = boundary.getBounds();
+  });
 
 function getColor(type){
-
-if(type==="配布済") return "#ff3333";
-
-if(type==="配布予定") return "#0066ff";
-
-return "#999";
-
+  if(type === "配布済") return "#ff3333";
+  if(type === "配布予定") return "#0066ff";
+  return "#999";
 }
-
 
 function formatDateSimple(value){
-
   if(!value) return "";
-
   const d = new Date(value);
-
   if(isNaN(d)) return value;
-
-  return d.getFullYear() + "/" +
-         (d.getMonth()+1) + "/" +
-         d.getDate();
-
+  return d.getFullYear() + "/" + (d.getMonth() + 1) + "/" + d.getDate();
 }
 
-
-function openPopupAbove(layer) {
+function openPopupAbove(layer){
   const bounds = layer.getBounds();
-  const topCenter = L.latLng(
-    bounds.getNorth(),
-    (bounds.getEast() + bounds.getWest()) / 2
-  );
-
+  const topCenter = L.latLng(bounds.getNorth(), (bounds.getEast() + bounds.getWest()) / 2);
   layer.openPopup(topCenter);
 }
 
-
 function makePopupHtml(row, isPlanned){
-
   let html =
-     `<div class="popup-main-info">` +
+    `<div class="popup-main-info">` +
     "種類：" + row["種類"] + "<br>" +
     "実施日：" + formatDateSimple(row["実施日"]) + "<br>" +
     "枚数：" + row["枚数"] + "<br>" +
@@ -1003,54 +1035,32 @@ function makePopupHtml(row, isPlanned){
     `</div>`;
 
   if(isPlanned){
-    html += `<br><br>
-      <button onclick="convertPlannedToDone('${row["ID"]}')">
-        配布済にする
-      </button>`;
+    html += `<br><br><button onclick="convertPlannedToDone('${row["ID"]}')">配布済にする</button>`;
   }
 
-  html += `<br><br>
-    <button class="popup-admin-btn"
-      onclick="openRequestMenu('${row["ID"]}')">
-      管理者へ修正依頼
-    </button>`;
+  html += `<br><br><button class="popup-admin-btn" onclick="openRequestMenu('${row["ID"]}')">管理者へ修正依頼</button>`;
 
   html += `
     <hr style="margin:10px 0; border:none; border-top:1px dashed #ccc;">
     <div style="font-size:12px; color:#666;">
       管理者用ID：${row["ID"]}<br>
-      <button class="popup-admin-btn"
-        onclick="copyAreaId('${row["ID"]}')"
-        style="margin-top:4px; font-size:11px;">
+      <button class="popup-admin-btn" onclick="copyAreaId('${row["ID"]}')" style="margin-top:4px; font-size:11px;">
         IDをコピー
       </button>
     </div>
   `;
-
   return html;
 }
 
 function copyAreaId(id){
-
   navigator.clipboard.writeText(id)
-    .then(function(){
-      alert("IDをコピーしました");
-    })
-    .catch(function(){
-      prompt("このIDをコピーしてください", id);
-    });
-
+    .then(() => alert("IDをコピーしました"))
+    .catch(() => prompt("このIDをコピーしてください", id));
 }
-
 window.copyAreaId = copyAreaId;
 
-
 function renderAdminHistory(areas){
-
-  const histories = areas.filter(row =>
-    row["管理者修正履歴"]
-  );
-
+  const histories = areas.filter(row => row["管理者修正履歴"]);
   const box = document.getElementById("adminHistoryContent");
 
   if(histories.length === 0){
@@ -1058,334 +1068,232 @@ function renderAdminHistory(areas){
     return;
   }
 
-  box.innerHTML =
-    histories.reverse().map(row => `
-      <div class="history-item">
-
-        修正依頼日：
-        ${formatDateSimple(row["修正依頼日時"]) || ""}<br>
-
-        管理者修正日時：
-        ${formatDateSimple(row["管理者修正日時"]) || ""}<br>
-
-        内容：<br>
-        ${String(row["管理者修正履歴"])
-          .replace(/\n/g,"<br>")}
-
-      </div>
-    `).join("");
-
+  box.innerHTML = histories.reverse().map(row => `
+    <div class="history-item">
+      修正依頼日：${formatDateSimple(row["修正依頼日時"]) || ""}<br>
+      管理者修正日時：${formatDateSimple(row["管理者修正日時"]) || ""}<br>
+      内容：<br>
+      ${String(row["管理者修正履歴"]).replace(/\n/g, "<br>")}
+    </div>
+  `).join("");
 }
-
 
 fetch(SCRIPT_URL)
+  .then(res => res.json())
+  .then(json => {
+    document.getElementById("titleBox").textContent = json.title;
+    renderAdminHistory(json.areas);
 
-.then(res=>res.json())
+    const planned = [];
+    const done = [];
 
-.then(json=>{
+    json.areas.forEach(row => {
+      if(!row["図形データ"]) return;
+      const geo = JSON.parse(row["図形データ"]);
+      if(row["種類"] === "配布予定") planned.push({geo, row});
+      if(row["種類"] === "配布済") done.push({geo, row});
+    });
 
-document.getElementById("titleBox")
-.textContent=json.title;
-
-renderAdminHistory(json.areas);
-
-const planned=[];
-const done=[];
-
-
-
-json.areas.forEach(row=>{
-
-if(!row["図形データ"])return;
-
-const geo=JSON.parse(row["図形データ"]);
-
-if(row["種類"]==="配布予定") planned.push({geo,row});
-
-if(row["種類"]==="配布済") done.push({geo,row});
-
-});
-
-
-
-
-
-function drawLayer(item){
-
-const layer=L.geoJSON(item.geo,{
-
-style:{
-  color:getColor(item.row["種類"]),
-  fillColor:getColor(item.row["種類"]),
-  fillOpacity:item.row["種類"]==="配布済" ? 0.5 : 0.35
-}
-
-}).addTo(drawnItems);
-
-
-
-const isPlanned = item.row["種類"] === "配布予定";
-
-areaItemsById[item.row["ID"]] = item;
-
-areaLayersById[item.row["ID"]] = layer;
-
-if(isPlanned){
-  plannedItemsById[item.row["ID"]] = item;
-}
-
-layer.bindPopup(
-  makePopupHtml(item.row, isPlanned)
-);
-
-
-layer.on("click", function() {
-  map.fitBounds(layer.getBounds(), {
-    padding: [40, 40],
-    maxZoom: getTapZoom()
-  });
-});
-
-
-
-
-}
-
-async function convertPlannedToDone(id){
-
-  const item = plannedItemsById[id];
-
-  if(!item){
-    alert("配布予定データが見つかりません");
-    return;
-  }
-
-  const formData = await openDoneForm(item.row);
-
-  if(!formData) return;
-
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    body:JSON.stringify({
-          pass:formData.pass,
-      id:id + "（2）",
-      baseId:id,
-      type:"配布済",
-      date:formData.date,
-      count:formData.count,
-      person:formData.person,
-      note:formData.note,
-      geometry:item.geo
-    })
-  })
-  .then(res=>res.json())
-  .then(result=>{
-
-    if(result.status==="OK"){
-
-      const doneLayer = L.geoJSON(item.geo,{
+    function drawLayer(item){
+      const layer = L.geoJSON(item.geo, {
         style:{
-          color:getColor("配布済"),
-          fillColor:getColor("配布済"),
-          fillOpacity:0.5
+          color:getColor(item.row["種類"]),
+          fillColor:getColor(item.row["種類"]),
+          fillOpacity:item.row["種類"] === "配布済" ? 0.5 : 0.35
         }
       }).addTo(drawnItems);
 
-      const doneRow = {
-        "ID": id + "（2）",
-        "種類": "配布済",
-        "実施日": formData.date,
-        "枚数": formData.count,
-        "担当者": formData.person,
-        "備考": formData.note
-      };
+      const isPlanned = item.row["種類"] === "配布予定";
 
-doneLayer.bindPopup(
-  makePopupHtml(doneRow, false)
-);
+      areaItemsById[item.row["ID"]] = item;
+      areaLayersById[item.row["ID"]] = layer;
 
-      openPopupAbove(doneLayer);
+      if(isPlanned){
+        plannedItemsById[item.row["ID"]] = item;
+      }
 
-    }else{
-      alert("合言葉が違います");
+      layer.bindPopup(makePopupHtml(item.row, isPlanned));
+
+      layer.on("click", function() {
+        map.fitBounds(layer.getBounds(), {
+          padding: [40, 40],
+          maxZoom: getTapZoom()
+        });
+      });
     }
 
-  });
+    async function convertPlannedToDone(id){
+      const item = plannedItemsById[id];
+      if(!item){
+        alert("配布予定データが見つかりません");
+        return;
+      }
 
-}
+      const formData = await openDoneForm(item.row);
+      if(!formData) return;
 
+      fetch(SCRIPT_URL,{
+        method:"POST",
+        body:JSON.stringify({
+          pass:formData.pass,
+          id:id + "（2）",
+          baseId:id,
+          type:"配布済",
+          date:formData.date,
+          count:formData.count,
+          person:formData.person,
+          note:formData.note,
+          geometry:item.geo
+        })
+      })
+      .then(res => res.json())
+      .then(result => {
+        if(result.status === "OK"){
+          const doneLayer = L.geoJSON(item.geo,{
+            style:{
+              color:getColor("配布済"),
+              fillColor:getColor("配布済"),
+              fillOpacity:0.5
+            }
+          }).addTo(drawnItems);
 
-function openRequestMenu(id){
+          const doneRow = {
+            "ID": id + "（2）",
+            "種類": "配布済",
+            "実施日": formData.date,
+            "枚数": formData.count,
+            "担当者": formData.person,
+            "備考": formData.note
+          };
 
-  currentRequestId = id;
-
-  document.getElementById("requestChoiceModal").style.display = "flex";
-
-}
-
-
-function chooseDeleteRequest(){
-
-  document.getElementById("requestChoiceModal").style.display = "none";
-
-  const pass = prompt("合言葉");
-  if(!pass) return;
-
-  const ok = confirm("削除依頼を送信してよろしいですか？");
-  if(!ok) return;
-
-  sendRequestToSheet(
-    currentRequestId,
-    pass,
-    "【削除依頼】このエリアの削除をお願いします。"
-  );
-
-}
-
-
-function chooseModifyRequest(){
-
-  document.getElementById("requestChoiceModal").style.display = "none";
-
-  openModifyRequestForm(currentRequestId);
-
-}
-
-function cancelRequestChoice(){
-  document.getElementById("requestChoiceModal").style.display = "none";
-  currentRequestId = null;
-}
-
-window.chooseDeleteRequest = chooseDeleteRequest;
-window.chooseModifyRequest = chooseModifyRequest;
-window.cancelRequestChoice = cancelRequestChoice;
-
-
-function sendDeleteRequest(id){
-
-  const pass = prompt("合言葉");
-  if(!pass) return;
-
-  const ok = confirm("削除依頼を送信してよろしいですか？");
-  if(!ok) return;
-
-  sendRequestToSheet(id, pass, "【削除依頼】このエリアの削除をお願いします。");
-
-}
-
-function openModifyRequestForm(id){
-
-  currentRequestId = id;
-
-  document.getElementById("requestType").value = "";
-  document.getElementById("requestYear").value = "";
-  document.getElementById("requestMonth").value = "";
-  document.getElementById("requestDay").value = "";
-  document.getElementById("requestCount").value = "";
-  document.getElementById("requestPerson").value = "";
-  document.getElementById("requestNote").value = "";
-  document.getElementById("requestPass").value = "";
-  document.getElementById("requestError").textContent = "";
-
-  document.getElementById("requestFormModal").style.display = "flex";
-
-}
-
-function submitModifyRequest(){
-
-  const pass = document.getElementById("requestPass").value;
-  const errorBox = document.getElementById("requestError");
-
-  errorBox.textContent = "";
-
-  if(!pass){
-    errorBox.textContent = "※合言葉を入力してください";
-    return;
-  }
-
-
-
-  const requestYear = document.getElementById("requestYear").value;
-  const requestMonth = document.getElementById("requestMonth").value;
-  const requestDay = document.getElementById("requestDay").value;
-
-  const requestDate =
-    requestYear && requestMonth && requestDay
-    ? `${requestYear}/${requestMonth}/${requestDay}`
-    : "";
-
-
-  const requestText =
-    "【修正依頼】\n" +
-    "種類：" + document.getElementById("requestType").value + "\n" +
-    "日付：" + requestDate + "\n" +
-    "枚数：" + document.getElementById("requestCount").value + "\n" +
-    "担当者：" + document.getElementById("requestPerson").value + "\n" +
-    "備考：" + document.getElementById("requestNote").value;
-
-  const ok = confirm("修正依頼を送信しますか？");
-  if(!ok) return;
-
-  document.getElementById("requestFormModal").style.display = "none";
-
-  sendRequestToSheet(currentRequestId, pass, requestText);
-
-}
-
-window.submitModifyRequest = submitModifyRequest;
-window.cancelRequestForm = cancelRequestForm;
-
-function cancelRequestForm(){
-  document.getElementById("requestFormModal").style.display = "none";
-}
-
-function sendRequestToSheet(id, pass, requestText){
-
-  fetch(SCRIPT_URL,{
-    method:"POST",
-    body:JSON.stringify({
-      action:"request",
-      id:id,
-      pass:pass,
-      requestText:requestText
-    })
-  })
-  .then(res=>res.json())
-  .then(result=>{
-
-    if(result.status==="OK"){
-      alert("管理者への依頼を送信しました");
-    }else if(result.status==="NG"){
-      alert("合言葉が違います");
-    }else{
-      alert("対象データが見つかりませんでした");
+          doneLayer.bindPopup(makePopupHtml(doneRow, false));
+          openPopupAbove(doneLayer);
+        }else{
+          alert("合言葉が違います");
+        }
+      });
     }
 
+    function openRequestMenu(id){
+      currentRequestId = id;
+      document.getElementById("requestChoiceModal").style.display = "flex";
+    }
+
+    function chooseDeleteRequest(){
+      document.getElementById("requestChoiceModal").style.display = "none";
+      const pass = prompt("合言葉");
+      if(!pass) return;
+      const ok = confirm("削除依頼を送信してよろしいですか？");
+      if(!ok) return;
+      sendRequestToSheet(currentRequestId, pass, "【削除依頼】このエリアの削除をお願いします。");
+    }
+
+    function chooseModifyRequest(){
+      document.getElementById("requestChoiceModal").style.display = "none";
+      openModifyRequestForm(currentRequestId);
+    }
+
+    function cancelRequestChoice(){
+      document.getElementById("requestChoiceModal").style.display = "none";
+      currentRequestId = null;
+    }
+
+    function sendDeleteRequest(id){
+      const pass = prompt("合言葉");
+      if(!pass) return;
+      const ok = confirm("削除依頼を送信してよろしいですか？");
+      if(!ok) return;
+      sendRequestToSheet(id, pass, "【削除依頼】このエリアの削除をお願いします。");
+    }
+
+    function openModifyRequestForm(id){
+      currentRequestId = id;
+      document.getElementById("requestType").value = "";
+      document.getElementById("requestYear").value = "";
+      document.getElementById("requestMonth").value = "";
+      document.getElementById("requestDay").value = "";
+      document.getElementById("requestCount").value = "";
+      document.getElementById("requestPerson").value = "";
+      document.getElementById("requestNote").value = "";
+      document.getElementById("requestPass").value = "";
+      document.getElementById("requestError").textContent = "";
+      document.getElementById("requestFormModal").style.display = "flex";
+    }
+
+    function submitModifyRequest(){
+      const pass = document.getElementById("requestPass").value;
+      const errorBox = document.getElementById("requestError");
+      errorBox.textContent = "";
+
+      if(!pass){
+        errorBox.textContent = "※合言葉を入力してください";
+        return;
+      }
+
+      const requestYear = document.getElementById("requestYear").value;
+      const requestMonth = document.getElementById("requestMonth").value;
+      const requestDay = document.getElementById("requestDay").value;
+
+      const requestDate = requestYear && requestMonth && requestDay ? `${requestYear}/${requestMonth}/${requestDay}` : "";
+
+      const requestText =
+        "【修正依頼】\n" +
+        "種類：" + document.getElementById("requestType").value + "\n" +
+        "日付：" + requestDate + "\n" +
+        "枚数：" + document.getElementById("requestCount").value + "\n" +
+        "担当者：" + document.getElementById("requestPerson").value + "\n" +
+        "備考：" + document.getElementById("requestNote").value;
+
+      const ok = confirm("修正依頼を送信しますか？");
+      if(!ok) return;
+
+      document.getElementById("requestFormModal").style.display = "none";
+      sendRequestToSheet(currentRequestId, pass, requestText);
+    }
+
+    function cancelRequestForm(){
+      document.getElementById("requestFormModal").style.display = "none";
+    }
+
+    function sendRequestToSheet(id, pass, requestText){
+      fetch(SCRIPT_URL,{
+        method:"POST",
+        body:JSON.stringify({
+          action:"request",
+          id:id,
+          pass:pass,
+          requestText:requestText
+        })
+      })
+      .then(res => res.json())
+      .then(result => {
+        if(result.status === "OK"){
+          alert("管理者への依頼を送信しました");
+        }else if(result.status === "NG"){
+          alert("合言葉が違います");
+        }else{
+          alert("対象データが見つかりませんでした");
+        }
+      });
+    }
+
+    window.chooseDeleteRequest = chooseDeleteRequest;
+    window.chooseModifyRequest = chooseModifyRequest;
+    window.cancelRequestChoice = cancelRequestChoice;
+    window.submitModifyRequest = submitModifyRequest;
+    window.cancelRequestForm = cancelRequestForm;
+    window.openRequestMenu = openRequestMenu;
+    window.convertPlannedToDone = convertPlannedToDone;
+
+    planned.forEach(drawLayer);
+    done.forEach(drawLayer);
   });
-
-}
-
-window.openRequestMenu = openRequestMenu;
-
-
-window.convertPlannedToDone = convertPlannedToDone;
-
-
-
-planned.forEach(drawLayer);
-done.forEach(drawLayer);
-
-});
-
-
 
 map.on("draw:created", async function(e){
-
   const layer = e.layer;
   const geo = layer.toGeoJSON();
 
   const formData = await openAreaForm();
-
   if(!formData) return;
 
   fetch(SCRIPT_URL,{
@@ -1400,42 +1308,36 @@ map.on("draw:created", async function(e){
       geometry:geo
     })
   })
-  .then(res=>res.json())
-  .then(result=>{
-
-    if(result.status==="OK"){
-
+  .then(res => res.json())
+  .then(result => {
+    if(result.status === "OK"){
       layer.setStyle({
-      color:getColor(formData.type),
-      fillColor:getColor(formData.type),
-      fillOpacity:formData.type==="配布済" ? 0.5 : 0.35
+        color:getColor(formData.type),
+        fillColor:getColor(formData.type),
+        fillOpacity:formData.type === "配布済" ? 0.5 : 0.35
       });
 
       drawnItems.addLayer(layer);
 
-    const newRow = {
-      "ID": result.id,
-      "種類": formData.type,
-      "実施日": formData.date,
-      "枚数": formData.count,
-      "担当者": formData.person,
-      "備考": formData.note
-    };
-
-    const isPlanned = formData.type === "配布予定";
-
-    if(isPlanned){
-      plannedItemsById[newRow["ID"]] = {
-      geo: geo,
-      row: newRow
+      const newRow = {
+        "ID": result.id,
+        "種類": formData.type,
+        "実施日": formData.date,
+        "枚数": formData.count,
+        "担当者": formData.person,
+        "備考": formData.note
       };
-    }
 
-layer.bindPopup(
-  makePopupHtml(newRow, isPlanned)
-);
+      const isPlanned = formData.type === "配布予定";
 
+      if(isPlanned){
+        plannedItemsById[newRow["ID"]] = { geo:geo, row:newRow };
+      }
 
+      areaItemsById[newRow["ID"]] = { geo:geo, row:newRow };
+      areaLayersById[newRow["ID"]] = layer;
+
+      layer.bindPopup(makePopupHtml(newRow, isPlanned));
       layer.on("click", function() {
         map.fitBounds(layer.getBounds(), {
           padding: [40, 40],
@@ -1443,33 +1345,23 @@ layer.bindPopup(
         });
       });
 
-
       openPopupAbove(layer);
-
     }else{
       alert("合言葉が違います");
     }
-
   });
-
 });
-
-
-
-// ===== スマホ専用：中央ポイント作図ここから =====
 
 let mobileDrawing = false;
 let mobilePoints = [];
 let mobilePreviewLayer = null;
 
 function isMobile(){
-  return window.matchMedia("(max-width:600px)").matches;
+  return window.matchMedia("(max-width:600px) and (pointer:coarse)").matches;
 }
 
 function startMobileDraw(){
-
   if(!isMobile()) return;
-
   mobileDrawing = true;
   mobilePoints = [];
 
@@ -1482,37 +1374,28 @@ function startMobileDraw(){
 
   document.getElementById("mobileDrawStart").style.display = "none";
   document.getElementById("mobileDrawPanel").style.display = "flex";
+  document.getElementById("mapCenterCross").style.display = "block";
 }
 
 function addMobilePoint(){
-
   if(!isMobile()) return;
-
   if(!mobileDrawing){
     alert("先に「作図開始」を押してください");
     return;
   }
-
   const center = map.getCenter();
   mobilePoints.push([center.lat, center.lng]);
-
   updateMobilePreview();
-
 }
 
 function undoMobilePoint(){
-
   if(!isMobile()) return;
-
   if(mobilePoints.length === 0) return;
-
   mobilePoints.pop();
   updateMobilePreview();
-
 }
 
 function updateMobilePreview(){
-
   if(mobilePreviewLayer){
     map.removeLayer(mobilePreviewLayer);
     mobilePreviewLayer = null;
@@ -1534,18 +1417,14 @@ function updateMobilePreview(){
       weight:3
     }).addTo(map);
   }
-
 }
 
 async function finishMobileDraw(){
-
   if(!isMobile()) return;
-
   if(!mobileDrawing){
     alert("先に「作図開始」を押してください");
     return;
   }
-
   if(mobilePoints.length < 3){
     alert("範囲を作るには3点以上必要です");
     return;
@@ -1556,16 +1435,12 @@ async function finishMobileDraw(){
     properties:{},
     geometry:{
       type:"Polygon",
-      coordinates:[
-        mobilePoints.map(p => [p[1], p[0]])
-      ]
+      coordinates:[mobilePoints.map(p => [p[1], p[0]])]
     }
   };
 
   const layer = L.geoJSON(geo).getLayers()[0];
-
   const formData = await openAreaForm();
-
   if(!formData) return;
 
   fetch(SCRIPT_URL,{
@@ -1580,15 +1455,13 @@ async function finishMobileDraw(){
       geometry:geo
     })
   })
-  .then(res=>res.json())
-  .then(result=>{
-
-    if(result.status==="OK"){
-
+  .then(res => res.json())
+  .then(result => {
+    if(result.status === "OK"){
       layer.setStyle({
         color:getColor(formData.type),
         fillColor:getColor(formData.type),
-        fillOpacity:formData.type==="配布済" ? 0.5 : 0.35
+        fillOpacity:formData.type === "配布済" ? 0.5 : 0.35
       });
 
       drawnItems.addLayer(layer);
@@ -1605,23 +1478,13 @@ async function finishMobileDraw(){
       const isPlanned = formData.type === "配布予定";
 
       if(isPlanned){
-        plannedItemsById[newRow["ID"]] = {
-          geo: geo,
-          row: newRow
-        };
+        plannedItemsById[newRow["ID"]] = { geo:geo, row:newRow };
       }
 
-      areaItemsById[newRow["ID"]] = {
-        geo: geo,
-        row: newRow
-      };
-
+      areaItemsById[newRow["ID"]] = { geo:geo, row:newRow };
       areaLayersById[newRow["ID"]] = layer;
 
-      layer.bindPopup(
-        makePopupHtml(newRow, isPlanned)
-      );
-
+      layer.bindPopup(makePopupHtml(newRow, isPlanned));
       layer.on("click", function() {
         map.fitBounds(layer.getBounds(), {
           padding: [40, 40],
@@ -1637,18 +1500,18 @@ async function finishMobileDraw(){
       mobileDrawing = false;
       mobilePoints = [];
 
-      openPopupAbove(layer);
+      document.getElementById("mobileDrawPanel").style.display = "none";
+      document.getElementById("mobileDrawStart").style.display = "block";
+      document.getElementById("mapCenterCross").style.display = "none";
 
+      openPopupAbove(layer);
     }else{
       alert("合言葉が違います");
     }
-
   });
-
 }
 
 function cancelMobileDraw(){
-
   if(!isMobile()) return;
 
   mobileDrawing = false;
@@ -1661,6 +1524,7 @@ function cancelMobileDraw(){
 
   document.getElementById("mobileDrawPanel").style.display = "none";
   document.getElementById("mobileDrawStart").style.display = "block";
+  document.getElementById("mapCenterCross").style.display = "none";
 }
 
 window.startMobileDraw = startMobileDraw;
@@ -1669,23 +1533,13 @@ window.undoMobilePoint = undoMobilePoint;
 window.finishMobileDraw = finishMobileDraw;
 window.cancelMobileDraw = cancelMobileDraw;
 
-// ===== スマホ専用：中央ポイント作図ここまで =====
-
-
-
 function resetView(){
-
-if(window.fullBounds){
-
-map.fitBounds(window.fullBounds);
-
+  if(window.fullBounds){
+    map.fitBounds(window.fullBounds);
+  }
 }
-
-}
-
 
 function searchAreaById(){
-
   const keyword = document.getElementById("idSearchInput").value.trim();
   const countBox = document.getElementById("idSearchResultCount");
 
@@ -1695,10 +1549,7 @@ function searchAreaById(){
     return;
   }
 
-  const matchedIds = Object.keys(areaLayersById).filter(id =>
-    id.includes(keyword)
-  );
-
+  const matchedIds = Object.keys(areaLayersById).filter(id => id.includes(keyword));
   countBox.textContent = matchedIds.length + "件見つかりました";
 
   if(matchedIds.length === 0){
@@ -1707,22 +1558,16 @@ function searchAreaById(){
   }
 
   const layer = areaLayersById[matchedIds[0]];
-
   map.fitBounds(layer.getBounds(), {
     padding: [40, 40],
     maxZoom: getTapZoom()
   });
-
   openPopupAbove(layer);
-
 }
-
 window.searchAreaById = searchAreaById;
 
-
-
-
 let areaFormResolver = null;
+let doneFormResolver = null;
 
 function setupDateSelects(){
   const month = document.getElementById("formMonth");
@@ -1744,7 +1589,6 @@ function setupDateSelects(){
     requestDay.innerHTML += `<option value="${i}">${i}</option>`;
   }
 }
-
 setupDateSelects();
 
 function openAreaForm(){
@@ -1757,17 +1601,11 @@ function openAreaForm(){
   document.getElementById("formNote").value = "";
   document.getElementById("formPass").value = "";
   document.getElementById("typeError").textContent = "";
-
   document.getElementById("areaFormModal").style.display = "flex";
-
-  return new Promise(resolve => {
-    areaFormResolver = resolve;
-  });
+  return new Promise(resolve => { areaFormResolver = resolve; });
 }
 
-
 function submitAreaForm(){
-
   const errorBox = document.getElementById("typeError");
   errorBox.textContent = "";
 
@@ -1778,7 +1616,6 @@ function submitAreaForm(){
     errorBox.textContent = "※種類を選択してください";
     return;
   }
-
   if(!pass){
     errorBox.textContent = "※合言葉を入力してください";
     return;
@@ -1788,10 +1625,7 @@ function submitAreaForm(){
   const month = document.getElementById("formMonth").value;
   const day = document.getElementById("formDay").value;
 
-  const date =
-    year && month && day
-    ? `${year}/${month}/${day}`
-    : "";
+  const date = year && month && day ? `${year}/${month}/${day}` : "";
 
   const data = {
     type:type,
@@ -1804,23 +1638,16 @@ function submitAreaForm(){
 
   document.getElementById("areaFormModal").style.display = "none";
   areaFormResolver(data);
-
 }
-
 
 function cancelAreaForm(){
   document.getElementById("areaFormModal").style.display = "none";
   areaFormResolver(null);
 }
 
-
-let doneFormResolver = null;
-
 function splitDateValue(value){
   if(!value) return {year:"", month:"", day:""};
-
   const d = new Date(value);
-
   if(!isNaN(d)){
     return {
       year:String(d.getFullYear()),
@@ -1828,7 +1655,6 @@ function splitDateValue(value){
       day:String(d.getDate())
     };
   }
-
   const parts = String(value).split("/");
   return {
     year:parts[0] || "",
@@ -1839,22 +1665,16 @@ function splitDateValue(value){
 
 function openDoneForm(row){
   const dateParts = splitDateValue(row["実施日"]);
-
   document.getElementById("doneYear").value = dateParts.year;
   document.getElementById("doneMonth").value = dateParts.month;
   document.getElementById("doneDay").value = dateParts.day;
-
   document.getElementById("doneCount").value = row["枚数"] || "";
   document.getElementById("donePerson").value = row["担当者"] || "";
   document.getElementById("doneNote").value = row["備考"] || "";
   document.getElementById("donePass").value = "";
   document.getElementById("doneError").textContent = "";
-
   document.getElementById("doneFormModal").style.display = "flex";
-
-  return new Promise(resolve => {
-    doneFormResolver = resolve;
-  });
+  return new Promise(resolve => { doneFormResolver = resolve; });
 }
 
 function submitDoneForm(){
@@ -1862,7 +1682,6 @@ function submitDoneForm(){
   errorBox.textContent = "";
 
   const pass = document.getElementById("donePass").value;
-
   if(!pass){
     errorBox.textContent = "※合言葉を入力してください";
     return;
@@ -1872,10 +1691,7 @@ function submitDoneForm(){
   const month = document.getElementById("doneMonth").value;
   const day = document.getElementById("doneDay").value;
 
-  const date =
-    year && month && day
-    ? `${year}/${month}/${day}`
-    : "";
+  const date = year && month && day ? `${year}/${month}/${day}` : "";
 
   const data = {
     type:"配布済",
@@ -1903,12 +1719,10 @@ function openContactForm(){
   document.getElementById("contactNote").value = "";
   document.getElementById("contactPass").value = "";
   document.getElementById("contactError").textContent = "";
-
   document.getElementById("contactFormModal").style.display = "flex";
 }
 
 function submitContactForm(){
-
   const errorBox = document.getElementById("contactError");
   errorBox.textContent = "";
 
@@ -1920,12 +1734,10 @@ function submitContactForm(){
     errorBox.textContent = "※タイトルを入力してください";
     return;
   }
-
   if(!message){
     errorBox.textContent = "※内容を入力してください";
     return;
   }
-
   if(!pass){
     errorBox.textContent = "※合言葉を入力してください";
     return;
@@ -1943,9 +1755,9 @@ function submitContactForm(){
       note:document.getElementById("contactNote").value
     })
   })
-  .then(res=>res.json())
-  .then(result=>{
-    if(result.status==="OK"){
+  .then(res => res.json())
+  .then(result => {
+    if(result.status === "OK"){
       alert("管理者へ連絡を送信しました");
       document.getElementById("contactFormModal").style.display = "none";
     }else{
@@ -1958,79 +1770,50 @@ function cancelContactForm(){
   document.getElementById("contactFormModal").style.display = "none";
 }
 
-
 function getTapZoom(){
   return window.matchMedia("(max-width:600px)").matches ? 13 : 11;
 }
 
 function getCityFitOptions(){
   if(window.matchMedia("(max-width:600px)").matches){
-    return {
-      padding:[30,30]
-    };
+    return { padding:[30,30] };
   }
-
   return {
     paddingTopLeft:[20,20],
     paddingBottomRight:[320,20]
   };
 }
 
-
 window.openContactForm = openContactForm;
 window.submitContactForm = submitContactForm;
 window.cancelContactForm = cancelContactForm;
 
-// ===== スマホ：修正履歴タップで開閉ここから =====
 document.getElementById("adminHistoryBox").addEventListener("click", function(){
   if(window.matchMedia("(max-width:600px)").matches){
     this.classList.toggle("expanded");
   }
 });
-// ===== スマホ：修正履歴タップで開閉ここまで =====
-
-
-
-// ===== スマホ：二本指中はクリックを無効化（確実版）ここから =====
 
 let ignoreNextClick = false;
 
-// 二本指検出
 map.getContainer().addEventListener("touchstart", function(e){
-
   if(e.touches.length >= 2){
     ignoreNextClick = true;
   }
-
 }, {passive:true});
 
-
-// 指が全部離れたら少し後に解除
 map.getContainer().addEventListener("touchend", function(){
-
   setTimeout(function(){
     ignoreNextClick = false;
   }, 300);
-
 }, {passive:true});
 
-
-// clickイベントそのものを止める
 map.on("click", function(e){
-
   if(ignoreNextClick){
-
     e.originalEvent.stopPropagation();
-
     return;
-
   }
-
 });
-
-// ===== スマホ：二本指中はクリックを無効化ここまで =====
-
-
 </script>
 
 </body>
