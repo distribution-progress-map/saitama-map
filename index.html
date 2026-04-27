@@ -204,7 +204,7 @@ left:20px;
 }
 
 /* ===== スマホ専用レイアウト調整ここから ===== */
-@media (max-width:600px){
+@media (max-width:600px) and (pointer:coarse){
 
   .title{
     top:8px;
@@ -377,7 +377,7 @@ left:20px;
   display:none;
 }
 
-@media (max-width:600px){
+@media (max-width:600px) and (pointer:coarse){
 
   .mobile-draw-start{
     display:block;
@@ -462,6 +462,25 @@ left:20px;
 }
 
 /* ===== 描画中ボタン日本語表示ここまで ===== */
+
+
+.leaflet-draw-draw-polygon{
+  width:auto !important;
+  background:none !important;
+}
+
+.leaflet-draw-draw-polygon span{
+  display:none;
+}
+
+.leaflet-draw-draw-polygon::after{
+  content:"エリアを作図";
+  font-size:14px;
+  padding:4px 8px;
+  background:white;
+  border-radius:6px;
+  border:1px solid #ccc;
+}
 
 
 
@@ -805,13 +824,13 @@ L.tileLayer(
 // ===== タッチ端末だけ中央ポイント作図モードに切替 =====
 
 const isTouchDevice =
-  "ontouchstart" in window ||
-  navigator.maxTouchPoints > 0;
+  window.matchMedia("(max-width:600px)").matches;
 
 if(isTouchDevice){
 
-  document.getElementById("mobileDrawPanel").style.display = "flex";
-  document.getElementById("mapCenterCross").style.display = "block";
+  document.getElementById("mobileDrawStart").style.display = "block";
+  document.getElementById("mobileDrawPanel").style.display = "none";
+  document.getElementById("mapCenterCross").style.display = "none";
 
   const drawToolbar = document.querySelector(".leaflet-draw");
 
