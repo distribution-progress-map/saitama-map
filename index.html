@@ -1639,55 +1639,48 @@ document.getElementById("adminHistoryBox").addEventListener("click", function(){
 // ===== スマホ：修正履歴タップで開閉ここまで =====
 
 
-// ===== スマホ：二本指操作では作図ポイントを追加しないここから =====
-let isTwoFingerTouch = false;
 
-const mapEl = map.getContainer();
+// ===== スマホ：二本指操作中は頂点を追加しない（完全版）ここから =====
 
-mapEl.addEventListener("touchstart", function(e){
+let multiTouchDetected = false;
 
-  if(e.touches && e.touches.length >= 2){
-    isTwoFingerTouch = true;
+map.getContainer().addEventListener("touchstart", function(e){
+  if(e.touches.length >= 2){
+    multiTouchDetected = true;
   }
-
 }, {passive:true});
 
-
-mapEl.addEventListener("touchmove", function(e){
-
-  if(e.touches && e.touches.length >= 2){
-    isTwoFingerTouch = true;
-  }
-
-}, {passive:true});
-
-
-mapEl.addEventListener("touchend", function(){
-
+map.getContainer().addEventListener("touchend", function(){
   setTimeout(function(){
-    isTwoFingerTouch = false;
-  }, 350);
-
+    multiTouchDetected = false;
+  }, 200);
 }, {passive:true});
 
+map.on("draw:drawvertex", function(e){
 
-map.on("draw:drawvertex", function(){
+  if(multiTouchDetected){
 
-  if(isTwoFingerTouch && drawnItems){
-    // 念のため何もしない
+    const layer = e.layers;
+
+    if(layer && layer.getLayers){
+
+      const vertices = layer.getLayers();
+
+      if(vertices.length > 0){
+
+        const last = vertices[vertices.length - 1];
+
+        layer.removeLayer(last);
+
+      }
+
+    }
+
   }
 
 });
 
-
-mapEl.addEventListener("touchend", function(e){
-
-  if(isTwoFingerTouch){
-    e.stopImmediatePropagation();
-  }
-
-}, true);
-// ===== スマホ：二本指操作では作図ポイントを追加しないここまで =====
+// ===== スマホ：二本指操作中は頂点を追加しない（完全版）ここまで =====
 
 
 </script>
