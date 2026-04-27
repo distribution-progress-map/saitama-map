@@ -367,10 +367,6 @@ left:20px;
 
 @media (max-width:600px){
 
-  .leaflet-draw{
-    display:none;
-  }
-
   .mobile-draw-panel{
     display:flex;
     position:absolute;
@@ -773,6 +769,31 @@ L.tileLayer(
 "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
 {attribution:"©OpenStreetMap"}
 ).addTo(map);
+
+
+// ===== タッチ端末だけ中央ポイント作図モードに切替 =====
+
+const isTouchDevice =
+  "ontouchstart" in window ||
+  navigator.maxTouchPoints > 0;
+
+if(isTouchDevice){
+
+  document.getElementById("mobileDrawPanel").style.display = "flex";
+  document.getElementById("mapCenterCross").style.display = "block";
+
+  const drawToolbar = document.querySelector(".leaflet-draw");
+
+  if(drawToolbar){
+    drawToolbar.style.display = "none";
+  }
+
+}else{
+
+  document.getElementById("mobileDrawPanel").style.display = "none";
+  document.getElementById("mapCenterCross").style.display = "none";
+
+}
 
 
 
