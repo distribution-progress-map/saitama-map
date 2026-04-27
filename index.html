@@ -482,11 +482,6 @@ body{
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
   }
-
-  .leaflet-bottom.leaflet-left .leaflet-control-zoom{
-    margin-left:20px;     /* ← 左へ寄せる（小さくするほど左） */
-    margin-bottom:55px;  /* ← 下へ寄せる（小さくするほど下） */
-  }
 }
 
 
@@ -495,6 +490,16 @@ body{
 .leaflet-bottom.leaflet-left .leaflet-control-zoom{
   margin-bottom:35px;
   margin-left:18px;
+}
+
+
+@media (max-width:600px){
+
+  .leaflet-bottom.leaflet-left .leaflet-control-zoom{
+    margin-left:2px;     /* ← 左へ寄せる（小さくするほど左） */
+    margin-bottom:55px;  /* ← 下へ寄せる（小さくするほど下） */
+  }
+
 }
 
 
