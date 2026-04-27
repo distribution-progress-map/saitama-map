@@ -429,63 +429,79 @@ html,body{
 
 /* スマホ */
 @media (max-width:600px) and (pointer:coarse){
+
   .title{
     top:8px;
     left:50%;
     right:auto;
     transform:translateX(-50%);
-    font-size:11px;
-    padding:6px 10px;
+    font-size:8px;
+    padding:4px 8px;
     width:max-content;
-    max-width:92vw;
+    max-width:78vw;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    border-radius:14px;
   }
 
   .contact-panel{
-    padding:3px 5px;
+    top:52px;
+    right:8px;
+    padding:2px 3px;
+    border-radius:12px;
   }
 
   .contact-panel button{
-    font-size:10px !important;
-    padding:3px 6px !important;
-  }
+  font-size:9px !important;
+  padding:5px 9px !important;
+  border-radius:14px;
+}
 
   .reset-panel{
-    left:6px;
-    bottom:6px;
-    padding:5px;
+    left:8px;
+    bottom:8px;
+    padding:3px;
+    border-radius:12px;
   }
 
   .reset-panel button{
-    font-size:11px;
-    padding:5px 7px;
+    font-size:10px;
+    padding:6px 10px;
+    border-radius:14px;
   }
 
   .id-search-panel{
-    right:6px;
-    bottom:6px;
+    right:8px;
+    bottom:8px;
     top:auto;
-    width:170px;
-    padding:5px;
+    width:164px;
+    padding:4px;
+    display:flex;
+    align-items:center;
+    gap:4px;
   }
 
   .id-search-panel input{
-    width:105px;
+    width:110px;
+    flex:1;
     font-size:11px;
-    padding:4px;
+    padding:5px 8px;
+    min-width:0;
   }
 
   .id-search-panel button{
-    font-size:11px;
-    padding:4px 6px;
+    width:42px;
+    flex:0 0 42px;
+    font-size:10px;
+    padding:5px 0;
+    white-space:nowrap;
   }
 
   .id-search-count{
-    font-size:10px;
+    font-size:9px;
     color:#666;
-    margin-top:3px;
+    margin-top:2px;
     text-align:center;
   }
 
@@ -582,13 +598,20 @@ html,body{
   .mobile-draw-start{
     display:block;
     position:absolute;
-    left:12px;
-    top:64px;
+    left:8px;
+    top:52px;
     z-index:2000;
     background:transparent;
     padding:0;
     border-radius:0;
     box-shadow:none;
+  }
+
+  .mobile-draw-start button{
+    font-size:12px !important;
+    padding:8px 18px !important;
+    border-radius:16px;
+    min-width:auto;
   }
 
   .mobile-draw-panel{
