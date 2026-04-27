@@ -197,7 +197,11 @@ bottom:20px;
 left:20px;
 }
 
-
+.history-toggle-hint{
+  font-size:11px;
+  color:#888;
+  margin-left:6px;
+}
 
 /* ===== スマホ専用レイアウト調整ここから ===== */
 @media (max-width:600px){
@@ -353,6 +357,10 @@ left:20px;
     max-width:80% !important;
   }
 /* ===== スマホ専用：入力フォーム横幅80%ここまで ===== */
+
+  .history-toggle-hint{
+    font-size:10px;
+  }
 
 
 }
@@ -733,8 +741,11 @@ left:20px;
 
 <div class="panel admin-history-panel" id="adminHistoryBox">
 
-  <div class="history-title">
-    <strong>管理者修正履歴</strong>
+  <div class="history-title" onclick="toggleHistoryPanel()">
+    <strong>
+      管理者修正履歴
+      <span class="history-toggle-hint">（タップで開閉）</span>
+    </strong>
   </div>
 
   <div id="adminHistoryContent">
