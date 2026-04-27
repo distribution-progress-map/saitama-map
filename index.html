@@ -373,10 +373,26 @@ left:20px;
   display:none;
 }
 
+.mobile-draw-start{
+  display:none;
+}
+
 @media (max-width:600px){
 
+  .mobile-draw-start{
+    display:block;
+    position:absolute;
+    left:6px;
+    top:60px;
+    z-index:2000;
+    background:white;
+    padding:6px;
+    border-radius:8px;
+    box-shadow:0 0 6px rgba(0,0,0,.3);
+  }
+
   .mobile-draw-panel{
-    display:flex;
+    display:none;
     position:absolute;
     left:6px;
     top:60px;
@@ -504,6 +520,10 @@ left:20px;
 
 
 <!-- ===== スマホ専用：中央ポイント作図ボタンここから ===== -->
+<div class="mobile-draw-start" id="mobileDrawStart">
+  <button onclick="startMobileDraw()">作図開始</button>
+</div>
+
 <div class="mobile-draw-panel" id="mobileDrawPanel">
   <button onclick="startMobileDraw()">作図開始</button>
   <button onclick="addMobilePoint()">ここに点を追加</button>
@@ -1441,6 +1461,8 @@ function startMobileDraw(){
 
   alert("地図の中心に合わせて「ここに点を追加」を押してください。3点以上で囲めます。");
 
+  document.getElementById("mobileDrawStart").style.display = "none";
+  document.getElementById("mobileDrawPanel").style.display = "flex";
 }
 
 function addMobilePoint(){
@@ -1618,6 +1640,8 @@ function cancelMobileDraw(){
     mobilePreviewLayer = null;
   }
 
+  document.getElementById("mobileDrawPanel").style.display = "none";
+  document.getElementById("mobileDrawStart").style.display = "block";
 }
 
 window.startMobileDraw = startMobileDraw;
