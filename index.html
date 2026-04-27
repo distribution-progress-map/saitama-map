@@ -275,8 +275,8 @@ body{
 
 .leaflet-draw-draw-polygon::after{
   content:"エリアを作図";
-  font-size:14px;
-  padding:4px 8px;
+  font-size:17px;
+  padding:5px 10px;
   background:white;
   border-radius:6px;
   border:1px solid #ccc;
@@ -497,10 +497,42 @@ body{
 
   .leaflet-bottom.leaflet-left .leaflet-control-zoom{
     margin-left:2px;     /* ← 左へ寄せる（小さくするほど左） */
-    margin-bottom:40px;  /* ← 下へ寄せる（小さくするほど下） */
+    margin-bottom:35px;  /* ← 下へ寄せる（小さくするほど下） */
   }
 
 }
+
+
+
+/* パソコンのみの設定 */
+
+@media (min-width:601px){
+
+  .history-toggle-hint{
+    display:none;
+  }
+
+  .leaflet-top.leaflet-left .leaflet-draw{
+    margin-top:95px;   /* 修正履歴 top:100px とほぼ上揃え */
+    margin-left:10px;
+  }
+
+  .admin-history-panel{
+    height:310px;   /* 約140% */
+  }
+
+  #adminHistoryContent{
+    height:260px;
+  }
+
+  .id-search-panel{
+    top:450px;
+  }
+
+
+}
+
+/* パソコンのみの設定 */
 
 
 </style>
