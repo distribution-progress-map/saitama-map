@@ -1618,6 +1618,38 @@ document.getElementById("adminHistoryBox").addEventListener("click", function(){
 // ===== スマホ：修正履歴タップで開閉ここまで =====
 
 
+// ===== スマホ：二本指操作で作図点を追加しないここから =====
+let multiTouchDrawing = false;
+
+const mapContainer = map.getContainer();
+
+mapContainer.addEventListener("touchstart", function(e){
+  if(e.touches && e.touches.length >= 2){
+    multiTouchDrawing = true;
+  }
+}, {passive:true});
+
+mapContainer.addEventListener("click", function(e){
+  if(multiTouchDrawing){
+    e.stopPropagation();
+    e.preventDefault();
+
+    setTimeout(function(){
+      multiTouchDrawing = false;
+    }, 300);
+  }
+}, true);
+
+mapContainer.addEventListener("touchend", function(){
+  if(multiTouchDrawing){
+    setTimeout(function(){
+      multiTouchDrawing = false;
+    }, 300);
+  }
+}, {passive:true});
+// ===== スマホ：二本指操作で作図点を追加しないここまで =====
+
+
 </script>
 
 </body>
