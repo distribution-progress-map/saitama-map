@@ -557,7 +557,7 @@ body{
 
 <!-- スマホ専用：中央ポイント作図 -->
 <div class="mobile-draw-start" id="mobileDrawStart">
-  <button onclick="startMobileDraw()">作図開始</button>
+  <button onclick="startMobileDraw()">エリアを作図</button>
 </div>
 
 <div class="mobile-draw-panel" id="mobileDrawPanel">
@@ -1016,7 +1016,7 @@ function addMobilePoint(){
   if(!isTouchDevice) return;
 
   if(!mobileDrawing){
-    alert("先に「作図開始」を押してください");
+    alert("先に「エリアを作図」を押してください");
     return;
   }
 
@@ -1060,7 +1060,7 @@ async function finishMobileDraw(){
   if(!isTouchDevice) return;
 
   if(!mobileDrawing){
-    alert("先に「作図開始」を押してください");
+    alert("先に「エリアを作図」を押してください");
     return;
   }
 
