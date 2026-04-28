@@ -460,7 +460,7 @@ body{
     bottom:58px !important;
     right:6px;
     width:170px;
-    height:58px !important;
+    height:64px !important;
     max-height:none;
     font-size:11px;
     padding:6px;
@@ -530,6 +530,23 @@ body{
     max-height:calc(100vh - 120px);
     overflow-y:auto;
     -webkit-overflow-scrolling:touch;
+  }
+
+  /* タイトル全体を2行構成にする */
+  .history-title{
+    line-height:1.2;
+  }
+
+  /* 「管理者修正履歴」だけ110% */
+  .history-title strong{
+    font-size:110%;
+    display:block;   /* 1行目固定 */
+  }
+
+  /* 「（タップで開閉）」を2行目へ */
+  .history-toggle-hint{
+    display:block;
+    margin-left:0;
   }
 }
 
