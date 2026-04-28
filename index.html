@@ -1616,7 +1616,7 @@ function searchAreaById(){
   }
 
   const matchedIds = Object.keys(areaLayersById).filter(id => id.includes(keyword));
-  countBox.textContent = matchedIds.length + "件見つかりました";
+  countBox.textContent = matchedIds.length + "件";
 
   if(matchedIds.length === 0){
     alert("該当するIDのエリアが見つかりませんでした");
