@@ -303,6 +303,38 @@ body{
   display:none;
 }
 
+
+/* =========================================
+   凡例デザイン
+========================================= */
+
+.legend-panel{
+  right:15px;
+  bottom:20px;   /* PC：右下 */
+  font-size:13px;
+  line-height:1.6;
+  padding:8px 10px;
+}
+
+/* 色四角 */
+.legend-color{
+  display:inline-block;
+  width:14px;
+  height:14px;
+  margin-right:6px;
+  border-radius:3px;
+  vertical-align:middle;
+}
+
+.legend-color.planned{
+  background:#0066ff;   /* 配布予定（青） */
+}
+
+.legend-color.done{
+  background:#ff3333;   /* 配布済（赤） */
+}
+
+
 @media (max-width:600px) and (pointer:coarse){
   .leaflet-draw{
     display:none !important;
@@ -417,7 +449,7 @@ body{
   }
 
   .leaflet-bottom.leaflet-left .leaflet-control-zoom{
-    margin-left:14px;     /* ← 左へ寄せる（小さくするほど左） */
+    margin-left:10px;     /* ← 左へ寄せる（小さくするほど左） */
     margin-bottom:35px;  /* ← 下へ寄せる（小さくするほど下） */
   }
 
@@ -554,6 +586,15 @@ body{
     margin-left:0;
     margin-top:3px;   /* ← 行間を広げる */
   }
+
+  .legend-panel{
+    left:58px;     /* +-ボタンの右 */
+    bottom:6px;    /* 全体表示ボタンの上ラインに合わせる */
+    right:auto;
+    font-size:11px;
+    padding:5px 7px;
+  }
+  
 }
 
 
@@ -639,7 +680,9 @@ body{
   <button onclick="cancelMobileDraw()">キャンセル</button>
 </div>
 
+
 <div class="map-center-cross" id="mapCenterCross">＋</div>
+
 
 <!-- 配布エリア登録フォーム -->
 <div id="areaFormModal" class="modal-bg" style="display:none;">
@@ -684,6 +727,7 @@ body{
   </div>
 </div>
 
+
 <!-- 配布済フォーム -->
 <div id="doneFormModal" class="modal-bg" style="display:none;">
   <div class="modal-box">
@@ -722,6 +766,7 @@ body{
     </div>
   </div>
 </div>
+
 
 <!-- 修正依頼フォーム -->
 <div id="requestFormModal" class="modal-bg" style="display:none;">
@@ -768,6 +813,7 @@ body{
   </div>
 </div>
 
+
 <!-- 依頼選択 -->
 <div id="requestChoiceModal" class="modal-bg" style="display:none;">
   <div class="modal-box">
@@ -787,6 +833,7 @@ body{
 <div class="panel contact-panel">
   <button onclick="openContactForm()">管理者へ連絡</button>
 </div>
+
 
 <!-- 管理者連絡フォーム -->
 <div id="contactFormModal" class="modal-bg" style="display:none;">
@@ -822,6 +869,20 @@ body{
     </div>
   </div>
 </div>
+
+
+<!-- 凡例 -->
+<div class="panel legend-panel">
+  <div class="legend-row">
+    <span class="legend-color planned"></span>
+    配布予定
+  </div>
+  <div class="legend-row">
+    <span class="legend-color done"></span>
+    配布済
+  </div>
+</div>
+
 
 <div class="panel admin-history-panel" id="adminHistoryBox">
   <div class="history-title" onclick="toggleHistoryPanel()">
