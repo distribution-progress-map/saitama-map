@@ -412,11 +412,20 @@ body{
     padding:4px 6px;
   }
 
+  .id-search-panel{
+    display:flex;
+    align-items:center;
+    gap:4px;
+    width:auto;
+  }
+
   .id-search-count{
-    font-size:10px;
+    order:-1;              /* 左に出す */
+    font-size:9px;
     color:#666;
-    margin-top:3px;
-    text-align:center;
+    margin-top:0;
+    white-space:nowrap;    /* 1行固定 */
+    min-width:max-content;
   }
 
   .history-title{
