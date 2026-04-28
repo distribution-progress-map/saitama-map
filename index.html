@@ -666,7 +666,7 @@ body{
     </div>
 
     <label>枚数</label>
-    <input id="formCount" type="text" placeholder="未入力も可">
+    <input id="formCount" type="number" placeholder="未入力も可">
 
     <label>担当者</label>
     <input id="formPerson" type="text" placeholder="匿名可・未入力も可">
@@ -705,7 +705,7 @@ body{
     </div>
 
     <label>枚数</label>
-    <input id="doneCount" type="text" placeholder="未入力も可">
+    <input id="doneCount" type="number" placeholder="未入力も可">
 
     <label>担当者</label>
     <input id="donePerson" type="text" placeholder="匿名可・未入力も可">
@@ -750,7 +750,7 @@ body{
     </div>
 
     <label>枚数</label>
-    <input id="requestCount" type="text" placeholder="未入力も可">
+    <input id="requestCount" type="number" placeholder="未入力も可">
 
     <label>担当者</label>
     <input id="requestPerson" type="text" placeholder="未入力も可">
@@ -1631,6 +1631,14 @@ function submitContactForm(){
     errorBox.textContent = "※合言葉を入力してください";
     return;
   }
+
+  
+  const ok = confirm("管理者へ連絡を送信しますか？");
+  if(!ok) return;
+
+  /* 送信ボタンを押したらすぐフォームを閉じる */
+  document.getElementById("contactFormModal").style.display = "none";
+
 
   fetch(SCRIPT_URL, {
     method:"POST",
