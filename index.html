@@ -416,6 +416,11 @@ body{
     left:6px;
   }
 
+  .leaflet-bottom.leaflet-left .leaflet-control-zoom{
+    margin-left:2px;     /* ← 左へ寄せる（小さくするほど左） */
+    margin-bottom:35px;  /* ← 下へ寄せる（小さくするほど下） */
+  }
+
   .id-search-panel{
     right:6px;
     bottom:6px;
@@ -476,7 +481,7 @@ body{
   }
 
   .admin-history-panel.expanded #adminHistoryContent{
-    height:189px !important;
+    height:188px !important;
     overflow-y:auto;
   }
 
@@ -561,10 +566,7 @@ body{
 
 @media (max-width:600px){
 
-  .leaflet-bottom.leaflet-left .leaflet-control-zoom{
-    margin-left:2px;     /* ← 左へ寄せる（小さくするほど左） */
-    margin-bottom:35px;  /* ← 下へ寄せる（小さくするほど下） */
-  }
+  
 
 }
 
