@@ -322,23 +322,26 @@ body{
 
   .mobile-draw-start button{
 
-    font-size:18px;
+    font-size:13px;   /* 18px → 約70% */
+
     font-weight:bold;
+
     color:white;
 
     background:linear-gradient(#ff9f1a, #f58200);
 
-    padding:12px 26px;
+    padding:8px 18px;
 
-    border-radius:10px;
+    border-radius:7px;
 
-    border:3px solid white;
+    border:2px solid white;
 
-    box-shadow:0 2px 6px rgba(0,0,0,.35);
+    box-shadow:0 2px 4px rgba(0,0,0,.25);
 
-    text-shadow:0 1px 2px rgba(0,0,0,.25);
+    text-shadow:0 1px 1px rgba(0,0,0,.25);
 
   }
+
 
   .mobile-draw-panel{
     display:none;
@@ -581,18 +584,25 @@ body{
   }
 
   .leaflet-draw-draw-polygon::after{
+
     content:"✎　エリアを作図";
-    display:block;
-    font-size:26px;
+
+    font-size:15px;   /* 26px → 約50% */
     font-weight:bold;
     color:white;
+
     background:linear-gradient(#ff9f1a, #f58200);
-    padding:18px 42px;
-    border-radius:10px;
-    border:3px solid white;
-    box-shadow:0 2px 6px rgba(0,0,0,.35);
-    text-shadow:0 1px 2px rgba(0,0,0,.25);
-    line-height:1;
+
+    padding:12px 14px;   /* 18×42 → 約50% */
+
+    border-radius:6px;
+
+    border:2px solid white;
+
+    box-shadow:0 2px 4px rgba(0,0,0,.25);
+
+    text-shadow:0 1px 1px rgba(0,0,0,.25);
+
   }
 
 }
