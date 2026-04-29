@@ -504,7 +504,7 @@ body{
     width:170px;
     height:60px !important;
     max-height:none;
-    font-size:11px;
+    font-size:11.5px;
     padding:6px;
     transition:height .2s;
   }
@@ -650,6 +650,23 @@ body{
     justify-content:flex-end;
     align-items:center;
     gap:4px;
+  }
+
+  /* 検索結果があるときだけ左へ拡張 */
+  .id-search-panel.has-result{
+    width:260px;              /* 左へ伸ばす */
+    display:flex;
+    justify-content:flex-end;
+    align-items:center;
+    gap:6px;
+  }
+
+  /* 検索結果を左端に表示 */
+  .id-search-panel.has-result .id-search-count{
+    order:-1;
+    width:auto;
+    margin-right:auto;
+    text-align:left;
   }
 
   .leaflet-draw-draw-polygon{
