@@ -748,6 +748,10 @@ body{
       <option value="配布済">配布済</option>
     </select>
 
+    <div id="plannedDeleteNotice" style="display:none; color:#cc0000; font-size:13px; margin-top:6px; font-weight:bold;">
+      ※配布予定エリアは登録から1週間で自動削除されます。
+    </div>
+
     <label>配布予定日または配布実施日</label>
     <div class="date-row">
       <select id="formYear">
@@ -1065,9 +1069,19 @@ fetch(SCRIPT_URL)
     const done = [];
 
     json.areas.forEach(row => {
+      if(!row) return;
+      if(!row["ID"]) return;
+      if(!row["種類"]) return;
       if(!row["図形データ"]) return;
 
-      const geo = JSON.parse(row["図形データ"]);
+      let geo;
+
+      try {
+        geo = JSON.parse(row["図形データ"]);
+      } catch(e) {
+        console.warn("図形データの読み込みをスキップしました", row["ID"], e);
+        return;
+      }
 
       if(row["種類"] === "配布予定") planned.push({ geo, row });
       if(row["種類"] === "配布済") done.push({ geo, row });
@@ -1147,6 +1161,7 @@ function saveNewArea(geo, layer, formData){
 
     const newRow = {
       "ID":result.id,
+      "登録日時":new Date(),
       "種類":formData.type,
       "実施日":formData.date,
       "枚数":formData.count,
@@ -1319,6 +1334,7 @@ function openPopupAbove(layer){
 }
 
 function makePopupHtml(row, isPlanned){
+
   let html =
     `<div class="popup-main-info">` +
     "種類：" + (row["種類"] || "") + "<br>" +
@@ -1328,19 +1344,48 @@ function makePopupHtml(row, isPlanned){
     "備考：" + (row["備考"] || "") +
     `</div>`;
 
+
   if(isPlanned){
-    html += `<br><br>
+
+    let baseDate;
+
+    if(row["登録日時"]){
+      baseDate = new Date(row["登録日時"]);
+    }else{
+      baseDate = new Date(); // 登録直後用
+    }
+
+    if(!isNaN(baseDate)){
+
+      const deleteDate = new Date(baseDate);
+      deleteDate.setDate(deleteDate.getDate() + 7);
+
+      html +=
+        "<div style='margin-top:8px; font-size:12px; color:#cc0000;'>"
+        + "このエリアは "
+        + deleteDate.getFullYear() + "/"
+        + (deleteDate.getMonth()+1) + "/"
+        + deleteDate.getDate()
+        + " に自動削除予定です"
+        + "</div>";
+    }
+
+    html += `<br>
       <button onclick="convertPlannedToDone('${row["ID"]}')">配布済にする</button>`;
   }
 
+
   html += `<br><br>
     <button class="popup-admin-btn" onclick="openRequestMenu('${row["ID"]}')">管理者へ修正依頼</button>`;
+
 
   html += `
     <hr style="margin:10px 0; border:none; border-top:1px dashed #ccc;">
     <div style="font-size:12px; color:#666;">
       管理者用ID：${row["ID"]}<br>
-      <button class="popup-admin-btn" onclick="copyAreaId('${row["ID"]}')" style="margin-top:4px; font-size:11px;">IDをコピー</button>
+      <button class="popup-admin-btn"
+      onclick="copyAreaId('${row["ID"]}')"
+      style="margin-top:4px; font-size:11px;">IDをコピー</button>
     </div>`;
 
   return html;
@@ -1579,8 +1624,14 @@ function setupDateSelects(){
 
 setupDateSelects();
 
+document.getElementById("formType").addEventListener("change", function(){
+  document.getElementById("plannedDeleteNotice").style.display =
+    this.value === "配布予定" ? "block" : "none";
+});
+
 function openAreaForm(){
   document.getElementById("formType").value = "";
+  document.getElementById("plannedDeleteNotice").style.display = "none";
   document.getElementById("formYear").value = "";
   document.getElementById("formMonth").value = "";
   document.getElementById("formDay").value = "";
@@ -1611,6 +1662,11 @@ function submitAreaForm(){
   if(!pass){
     errorBox.textContent = "※合言葉を入力してください";
     return;
+  }
+
+  if(type === "配布予定"){
+    const ok = confirm("配布予定エリアは1週間で削除されます。\n登録してよろしいですか？");
+    if(!ok) return;
   }
 
   const year = document.getElementById("formYear").value;
