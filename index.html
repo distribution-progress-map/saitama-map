@@ -192,7 +192,7 @@ body{
   top:350px;
   right:15px;
   width:210px;
-  padding:6px;
+  padding:10px;   /* ← 修正履歴と同じにする */
 }
 
 .id-search-panel input{
@@ -458,7 +458,7 @@ body{
     bottom:6px;
     top:auto;
     width:170px;
-    padding:5px;
+    padding:6px;   /* 修正履歴と揃える */
   }
 
   .id-search-panel input{
@@ -602,6 +602,14 @@ body{
 /* パソコンのみの設定 */
 @media (hover:hover) and (pointer:fine){
 
+  .contact-panel{
+    padding:4px 8px;
+  }
+
+  .reset-panel{
+    padding:4px 8px;
+  }
+
   .history-toggle-hint{
     display:none;
   }
@@ -656,6 +664,11 @@ body{
     left:0 !important;
     top:100% !important;
     margin-top:20px;
+  }
+
+  .leaflet-bottom.leaflet-left{
+    bottom:80px;   /* 上へ移動（数値を増やすほど上） */
+    left:10px;     /* 右へ移動（数値を増やすほど右） */
   }
 
 }
