@@ -1079,7 +1079,10 @@ fetch("saitama.geojson")
       }
     }).addTo(map);
 
-    map.fitBounds(boundary.getBounds());
+    map.fitBounds(boundary.getBounds(), {
+      padding:[40, 40]
+    });
+    
     window.fullBounds = boundary.getBounds();
   });
 
@@ -1893,7 +1896,9 @@ function cancelContactForm(){
 // =========================
 function resetView(){
   if(window.fullBounds){
-    map.fitBounds(window.fullBounds);
+    map.fitBounds(window.fullBounds, {
+      padding:[30, 30]
+    });
   }
 }
 
