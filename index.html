@@ -772,8 +772,14 @@ body{
     <label>備考</label>
     <textarea id="formNote" placeholder="未入力も可"></textarea>
 
-    <label>※合言葉</label>
+    
+    <!--<label>※合言葉</label>-->
+    <input id="formPass" type="hidden" value="">
+    <!--
+    ※パスワード復活時は以下に置き換え
     <input id="formPass" type="password" placeholder="合言葉">
+    -->
+
 
     <div class="modal-buttons">
       <button onclick="submitAreaForm()">OK</button>
@@ -812,8 +818,13 @@ body{
     <label>備考</label>
     <textarea id="doneNote" placeholder="未入力も可"></textarea>
 
-    <label>※合言葉</label>
+    
+    <!--<label>※合言葉</label>-->
+    <input id="donePass" type="hidden" value="">
+    <!--
+    ※パスワード復活時は以下に置き換え
     <input id="donePass" type="password" placeholder="合言葉">
+    -->
 
     <div class="modal-buttons">
       <button onclick="submitDoneForm()">配布済にする</button>
@@ -858,8 +869,13 @@ body{
     <label>備考</label>
     <textarea id="requestNote" placeholder="未入力も可"></textarea>
 
-    <label>※合言葉</label>
+    
+    <!--<label>※合言葉</label>-->
+    <input id="requestPass" type="hidden" value="">
+    <!--
+    ※パスワード復活時は以下に置き換え
     <input id="requestPass" type="password" placeholder="合言葉">
+    -->
 
     <div class="modal-buttons">
       <button onclick="submitModifyRequest()">修正依頼</button>
@@ -915,8 +931,13 @@ body{
     <label>備考</label>
     <textarea id="contactNote" placeholder="未入力も可"></textarea>
 
-    <label>※合言葉</label>
+    
+    <!--<label>※合言葉</label>-->
+    <input id="contactPass" type="hidden" value="">
+    <!--
+    ※パスワード復活時は以下に置き換え
     <input id="contactPass" type="password" placeholder="合言葉">
+    -->
 
     <div class="modal-buttons">
       <button onclick="submitContactForm()">送信</button>
@@ -932,7 +953,7 @@ body{
     <span class="legend-color planned"></span>
     配布予定
     <div style="font-size:10px; color:#555; margin-left:20px; line-height:1.2;">
-      （1週間で自動削除）
+      （ ↑ 1週間で自動削除）
     </div>
   </div>
   <div class="legend-row">
@@ -1504,6 +1525,21 @@ function openRequestMenu(id){
   document.getElementById("requestChoiceModal").style.display = "flex";
 }
 
+
+function chooseDeleteRequest(){
+  document.getElementById("requestChoiceModal").style.display = "none";
+
+  const ok = confirm("削除依頼を送信してよろしいですか？");
+  if(!ok) return;
+
+  sendRequestToSheet(
+    currentRequestId,
+    "",
+    "【削除依頼】このエリアの削除をお願いします。"
+  );
+}
+/*
+※合言葉を復活する場合はこれに置き換え
 function chooseDeleteRequest(){
   document.getElementById("requestChoiceModal").style.display = "none";
 
@@ -1519,6 +1555,8 @@ function chooseDeleteRequest(){
     "【削除依頼】このエリアの削除をお願いします。"
   );
 }
+  */
+
 
 function chooseModifyRequest(){
   document.getElementById("requestChoiceModal").style.display = "none";
@@ -1552,10 +1590,14 @@ function submitModifyRequest(){
 
   errorBox.textContent = "";
 
+
+  /*
   if(!pass){
     errorBox.textContent = "※合言葉を入力してください";
     return;
   }
+  */
+
 
   const requestYear = document.getElementById("requestYear").value;
   const requestMonth = document.getElementById("requestMonth").value;
@@ -1662,10 +1704,14 @@ function submitAreaForm(){
     return;
   }
 
+
+  /*
   if(!pass){
     errorBox.textContent = "※合言葉を入力してください";
     return;
   }
+  */
+
 
   if(type === "配布予定"){
     const ok = confirm("配布予定エリアは1週間で削除されます。\n登録してよろしいですか？");
@@ -1739,10 +1785,12 @@ function submitDoneForm(){
 
   errorBox.textContent = "";
 
+  /*
   if(!pass){
     errorBox.textContent = "※合言葉を入力してください";
     return;
   }
+  */
 
   const year = document.getElementById("doneYear").value;
   const month = document.getElementById("doneMonth").value;
@@ -1798,10 +1846,12 @@ function submitContactForm(){
     return;
   }
 
+  /*
   if(!pass){
     errorBox.textContent = "※合言葉を入力してください";
     return;
   }
+  */
 
   
   const ok = confirm("管理者へ連絡を送信しますか？");
