@@ -394,6 +394,26 @@ body{
     padding:5px 7px;
   }
 
+  /* 「ここに点を追加」だけ目立たせる */
+  .mobile-draw-panel button:first-child{
+
+    background:linear-gradient(#4da3ff, #0066ff);
+
+    color:white;
+
+    font-weight:bold;
+
+    border:2px solid white;
+
+    box-shadow:0 2px 4px rgba(0,0,0,.25);
+
+  }
+
+  /* 「囲み終わり」の下に少し隙間 */
+  .mobile-draw-panel button:nth-child(3){
+    margin-bottom:6px;
+  }
+
   .map-center-cross{
     display:none;
     position:absolute;
@@ -1082,7 +1102,7 @@ fetch("saitama.geojson")
     map.fitBounds(boundary.getBounds(), {
       padding:[40, 40]
     });
-    
+
     window.fullBounds = boundary.getBounds();
   });
 
