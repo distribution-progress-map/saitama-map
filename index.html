@@ -1102,7 +1102,11 @@ fetch("saitama.geojson")
       },
       onEachFeature:function(feature, layer){
         layer.on("click", function(){
+
+          console.log(feature.properties);
+
           map.fitBounds(layer.getBounds(), getCityFitOptions());
+
         });
       }
     }).addTo(map);
