@@ -1147,33 +1147,27 @@ fetch("saitama.geojson")
 
             if(!cityName) return;
 
-            if(window.matchMedia("(max-width:600px)").matches){
-              map.fitBounds(layer.getBounds(), getCityFitOptions());
-
-              setTimeout(function(){
-                const ok = confirm(
-                  cityName + "ページに移動しますか？"
-                );
-
-                if(!ok) return;
-
-                location.href =
-                  "map.html?city=" +
-                  encodeURIComponent(cityName);
-              }, 400);
-
-              return;
-            }
-
-            const ok = confirm(
-              cityName + "ページに移動しますか？"
+            
+            map.fitBounds(
+              layer.getBounds(),
+              getCityFitOptions()
             );
 
-            if(!ok) return;
+            setTimeout(function(){
 
-            location.href =
-              "map.html?city=" +
-              encodeURIComponent(cityName);
+              const ok = confirm(
+                cityName + "ページに移動しますか？"
+              );
+
+              if(!ok) return;
+
+              location.href =
+                "map.html?city=" +
+                encodeURIComponent(cityName);
+
+            }, 400);
+
+
 
           });
 
