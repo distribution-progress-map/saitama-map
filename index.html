@@ -218,6 +218,17 @@ body{
   left:20px;
 }
 
+.parent-link-panel{
+  bottom:58px;
+  left:20px;
+  padding:4px 8px;
+}
+
+.parent-link-panel button{
+  font-size:12px;
+  padding:5px 8px;
+}
+
 /* ズームボタンを「全体表示に戻る」の上へ */
 .leaflet-bottom.leaflet-left{
   bottom:52px;
@@ -456,6 +467,17 @@ body{
     left:6px;
     bottom:80px;
     padding:5px;
+  }
+
+  .parent-link-panel{
+    left:6px;
+    bottom:122px;
+    padding:5px;
+  }
+
+  .parent-link-panel button{
+    font-size:11px;
+    padding:5px 7px;
   }
 
   .reset-panel button{
@@ -1002,6 +1024,10 @@ body{
   <button onclick="resetView()">全体表示に戻る</button>
 </div>
 
+<div class="panel parent-link-panel" id="parentLinkPanel">
+  <button onclick="goParentPage()">埼玉県全体へ戻る</button>
+</div>
+
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysYcR6z1nZ3iaDa8hVvwO50-REyUzzbHf5U2hgdhEoBpTtdK4W99OL_iZzI6WmntYeBg/exec";
 
@@ -1072,19 +1098,15 @@ const drawControl = new L.Control.Draw({
   }
 });
 
-if(!IS_PARENT_PAGE){
-  map.addControl(drawControl);
+
+document.getElementById("mobileDrawStart").style.display = "none";
+document.getElementById("mobileDrawPanel").style.display = "none";
+document.getElementById("mapCenterCross").style.display = "none";
+
+if(IS_PARENT_PAGE){
+  document.getElementById("parentLinkPanel").style.display = "none";
 }
 
-if(isTouchDevice && !IS_PARENT_PAGE){
-  document.getElementById("mobileDrawStart").style.display = "block";
-  document.getElementById("mobileDrawPanel").style.display = "none";
-  document.getElementById("mapCenterCross").style.display = "none";
-}else{
-  document.getElementById("mobileDrawStart").style.display = "none";
-  document.getElementById("mobileDrawPanel").style.display = "none";
-  document.getElementById("mapCenterCross").style.display = "none";
-}
 
 // =========================
 // 初期読み込み
@@ -1092,7 +1114,21 @@ if(isTouchDevice && !IS_PARENT_PAGE){
 fetch("saitama.geojson")
   .then(res => res.json())
   .then(data => {
-    const boundary = L.geoJSON(data, {
+
+    const filteredFeatures = IS_PARENT_PAGE
+      ? data.features
+      : data.features.filter(f =>
+          f.properties.N03_004 === CURRENT_CITY
+        );
+
+  
+    const filteredGeoJson = {
+      type:"FeatureCollection",
+      features:filteredFeatures
+    };
+
+    const boundary = L.geoJSON(filteredGeoJson, {
+
       style:{
         color:"#000",
         weight:2,
@@ -1100,15 +1136,33 @@ fetch("saitama.geojson")
         fillColor:"#dddddd",
         fillOpacity:0.5
       },
+
       onEachFeature:function(feature, layer){
-        layer.on("click", function(){
 
-          console.log(feature.properties);
+        if(IS_PARENT_PAGE){
 
-          map.fitBounds(layer.getBounds(), getCityFitOptions());
+          layer.on("click", function(){
 
-        });
+            const cityName = feature.properties.N03_004;
+
+            if(!cityName) return;
+
+            const ok = confirm(
+              cityName + "ページに移動しますか？"
+            );
+
+            if(!ok) return;
+
+            location.href =
+              "map.html?city=" +
+              encodeURIComponent(cityName);
+
+          });
+
+        }
+
       }
+
     }).addTo(map);
 
     map.fitBounds(boundary.getBounds(), {
@@ -1116,6 +1170,7 @@ fetch("saitama.geojson")
     });
 
     window.fullBounds = boundary.getBounds();
+
   });
 
 fetch(
@@ -1365,7 +1420,10 @@ function clearMobileDrawUi(){
   }
 
   document.getElementById("mobileDrawPanel").style.display = "none";
-  document.getElementById("mobileDrawStart").style.display = isTouchDevice ? "block" : "none";
+  document.getElementById("mobileDrawStart").style.display =
+  (isTouchDevice && !IS_PARENT_PAGE)
+    ? "block"
+    : "none";
   document.getElementById("mapCenterCross").style.display = "none";
 }
 
@@ -2027,10 +2085,15 @@ window.cancelRequestChoice = cancelRequestChoice;
 window.submitModifyRequest = submitModifyRequest;
 window.cancelRequestForm = cancelRequestForm;
 
+function goParentPage(){
+  location.href = "index.html";
+}
+
 window.convertPlannedToDone = convertPlannedToDone;
 window.copyAreaId = copyAreaId;
 window.searchAreaById = searchAreaById;
 window.resetView = resetView;
+window.goParentPage = goParentPage;
 window.toggleHistoryPanel = toggleHistoryPanel;
 </script>
 </body>
