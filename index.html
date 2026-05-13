@@ -1005,6 +1005,12 @@ body{
 <script>
 const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbysYcR6z1nZ3iaDa8hVvwO50-REyUzzbHf5U2hgdhEoBpTtdK4W99OL_iZzI6WmntYeBg/exec";
 
+const params = new URLSearchParams(location.search);
+
+const CURRENT_CITY = params.get("city") || "";
+
+const IS_PARENT_PAGE = !CURRENT_CITY;
+
 const isTouchDevice = window.matchMedia("(max-width:600px) and (pointer:coarse)").matches;
 const map = L.map("map", { zoomControl:false }).setView([35.9,139.5], 9);
 
@@ -1066,9 +1072,11 @@ const drawControl = new L.Control.Draw({
   }
 });
 
-map.addControl(drawControl);
+if(!IS_PARENT_PAGE){
+  map.addControl(drawControl);
+}
 
-if(isTouchDevice){
+if(isTouchDevice && !IS_PARENT_PAGE){
   document.getElementById("mobileDrawStart").style.display = "block";
   document.getElementById("mobileDrawPanel").style.display = "none";
   document.getElementById("mapCenterCross").style.display = "none";
@@ -1106,7 +1114,11 @@ fetch("saitama.geojson")
     window.fullBounds = boundary.getBounds();
   });
 
-fetch(SCRIPT_URL)
+fetch(
+  SCRIPT_URL +
+  "?city=" +
+  encodeURIComponent(CURRENT_CITY)
+)
   .then(res => res.json())
   .then(json => {
     document.getElementById("titleBox").textContent = json.title;
@@ -1183,6 +1195,7 @@ function saveNewArea(geo, layer, formData){
     method:"POST",
     body:JSON.stringify({
       pass:formData.pass,
+      city:CURRENT_CITY,
       type:formData.type,
       date:formData.date,
       count:formData.count,
