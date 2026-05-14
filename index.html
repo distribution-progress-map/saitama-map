@@ -131,6 +131,31 @@ body{
 /* =========================
    各パネル
 ========================= */
+
+#parentNotice{
+  position:absolute;
+  top:100px;
+  left:18px;
+
+  z-index:1000;
+
+  background:#fff9e8;
+
+  border-left:5px solid #ff9800;
+  border-radius:10px;
+
+  padding:10px 12px;
+
+  font-size:14px;
+  font-weight:bold;
+
+  color:#444;
+
+  line-height:1.5;
+
+  box-shadow:0 2px 6px rgba(0,0,0,0.25);
+}
+
 .contact-panel{
   top:55px;
   right:15px;
@@ -349,6 +374,17 @@ body{
 @media (max-width:600px) and (pointer:coarse){
   .leaflet-draw{
     display:none !important;
+  }
+
+  #parentNotice{
+    top:88px;
+    left:10px;
+
+    padding:8px 10px;
+
+    font-size:12px;
+
+    border-radius:8px;
   }
 
   .mobile-draw-start{
@@ -760,6 +796,11 @@ body{
 
 <body>
 <div id="map"></div>
+
+<div id="parentNotice">
+  ※エリア作図は<br>
+  　各市町村ページにて
+</div>
 
 <!-- スマホ専用：中央ポイント作図 -->
 <div class="mobile-draw-start" id="mobileDrawStart">
